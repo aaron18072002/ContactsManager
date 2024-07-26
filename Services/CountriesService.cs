@@ -35,5 +35,11 @@ namespace Services
 
             return countryEntity.ToCountryResponse();
         }
+        public List<CountryResponse> GetAllCountries()
+        {
+            var result = this._countries.Select(c => c.ToCountryResponse()).ToList();
+
+            return result;
+        }
     }
 }
