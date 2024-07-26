@@ -12,6 +12,7 @@ namespace ContactsManagerTests
             this._countriesService = new CountriesService();
         }
 
+        #region AddCountry
         [Fact]
         public void AddCountry_NullCountry()
         {
@@ -81,9 +82,51 @@ namespace ContactsManagerTests
 
             //Act
             var response = this._countriesService.AddCountry(request);
+            var allCountries = this._countriesService.GetAllCountries();
 
             //Assert
             Assert.True(response.CountryId != Guid.Empty);
+            Assert.Contains(response, allCountries);
         }
+        #endregion
+
+        #region GetAllCountries
+        [Fact]
+        public void GetAllCountries_EmpltyList()
+        {
+            //Arrange
+            
+            //Act
+            var response = this._countriesService.GetAllCountries();
+
+            //Assert
+            Assert.Empty(response);
+        }
+
+        [Fact]
+        public void GetAllCountries_AddFewCountries()
+        {
+            //Arrange
+            var fewCountries = new List<CountryAddRequest>()
+            {
+                new CountryAddRequest() { CountryName = "UK" },
+                new CountryAddRequest() { CountryName = "USA" }
+            };
+            var expectedValue = new List<CountryResponse>();
+
+            //Act
+            foreach (var country in fewCountries)
+            {
+                expectedValue.Add(this._countriesService.AddCountry(country));
+            }
+            var actualValue = this._countriesService.GetAllCountries();
+
+            //Assert
+            foreach (var expectedCountry in expectedValue)
+            {
+                Assert.Contains(expectedCountry, actualValue);
+            }
+        }
+        #endregion
     }
 }
