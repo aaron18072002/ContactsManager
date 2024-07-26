@@ -17,6 +17,6 @@ namespace ServicesContracts.Interfaces
         /// </summary>
         /// <param name="country">Country object to add</param>
         /// <returns>Returns the country object after adding it (including newly generated country id)</returns>
-        CountryResponse AddCountry(CountryAddRequest country);
+        CountryResponse AddCountry(CountryAddRequest? country);
     }
 }

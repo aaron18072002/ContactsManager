@@ -5,7 +5,7 @@ namespace Services
 {
     public class CountriesService : ICountriesService
     {
-        public CountryResponse AddCountry(CountryAddRequest country)
+        public CountryResponse AddCountry(CountryAddRequest? country)
         {
             throw new NotImplementedException();
         }
