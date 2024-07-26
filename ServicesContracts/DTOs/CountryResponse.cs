@@ -14,6 +14,25 @@ namespace ServicesContracts.DTOs
     {
         public Guid CountryId { get; set; }
         public string? CountryName { get; set; }
+        public override bool Equals(object? obj)
+        {
+            if (obj is null)
+            {
+                return false;
+            }
+            if(!typeof(CountryResponse).Equals(obj.GetType()))
+            {
+                return false;
+            }
+            var objToCompare = obj as CountryResponse;
+
+            return this.CountryId == objToCompare?.CountryId && this.CountryName == objToCompare?.CountryName;
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
     }
     public static class CountryExtensions
     {
