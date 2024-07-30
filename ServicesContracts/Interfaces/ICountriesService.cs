@@ -24,5 +24,12 @@ namespace ServicesContracts.Interfaces
         /// </summary>
         /// <returns>Return a list of CountryResponse</returns>
         List<CountryResponse> GetAllCountries();
+        
+        /// <summary>
+        /// Return a country object from datasource
+        /// </summary>
+        /// <param name="id">CountryId to search</param>
+        /// <returns>Returns a CountryResponse or null</returns>
+        CountryResponse? GetCountryByCountryId(Guid? id);
     }
 }

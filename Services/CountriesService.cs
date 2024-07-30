@@ -41,5 +41,17 @@ namespace Services
 
             return result;
         }
+        public CountryResponse? GetCountryByCountryId(Guid? id)
+        {
+            if(id ==  null)
+            {
+                return null;
+            }
+
+            var countryEntity = this._countries.FirstOrDefault
+                (c => c.CountryId == id);
+
+            return countryEntity == null ? null : countryEntity.ToCountryResponse();
+        }
     }
 }

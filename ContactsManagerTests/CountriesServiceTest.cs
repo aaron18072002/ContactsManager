@@ -6,7 +6,7 @@ namespace ContactsManagerTests
 {
     public class CountriesServiceTest
     {
-        private ICountriesService _countriesService;
+        private readonly ICountriesService _countriesService;
         public CountriesServiceTest()
         {
             this._countriesService = new CountriesService();
