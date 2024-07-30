@@ -128,5 +128,38 @@ namespace ContactsManagerTests
             }
         }
         #endregion
+
+        #region GetCountryByCountryId
+        [Fact]
+        public void GetCountryByCountryId_NullCountryId()
+        {
+            //Arrange
+            Guid? countryId = null;
+
+            //Act
+            var response = this._countriesService.GetCountryByCountryId(countryId);
+
+            //Assert
+            Assert.Null(response);
+        }
+
+        [Fact]
+        public void GetCountryById_ValidCountryId()
+        {
+            //Arrange
+            var countryAddRequest = new CountryAddRequest()
+            {
+                CountryName = "Japan"
+            };
+            var expectedValue = this._countriesService.AddCountry(countryAddRequest);
+            var countryId = expectedValue.CountryId;
+
+            //Act
+            var actualValue = this._countriesService.GetCountryByCountryId(countryId);
+
+            //Assert
+            Assert.Equal(expectedValue, actualValue);
+        }
+        #endregion
     }
 }
