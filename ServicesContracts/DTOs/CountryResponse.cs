@@ -26,7 +26,8 @@ namespace ServicesContracts.DTOs
             }
             var objToCompare = obj as CountryResponse;
 
-            return this.CountryId == objToCompare?.CountryId && this.CountryName == objToCompare?.CountryName;
+            return this.CountryId == objToCompare?.CountryId && 
+                   this.CountryName == objToCompare?.CountryName;
         }
 
         public override int GetHashCode()
