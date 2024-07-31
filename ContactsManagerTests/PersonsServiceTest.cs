@@ -113,7 +113,7 @@ namespace ContactsManagerTests
                 Email = "email@sample.com",
                 Address = "address",
                 CountryId = countryResponse.CountryId,
-                DateOfBirth = DateTime.Parse("2002-18-07"),
+                DateOfBirth = DateTime.Parse("2002-07-18"),
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = false
             };
