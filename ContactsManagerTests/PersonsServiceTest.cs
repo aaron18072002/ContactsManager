@@ -1,4 +1,5 @@
-﻿using Services;
+﻿using Entities;
+using Services;
 using ServicesContracts.DTOs;
 using ServicesContracts.Enums;
 using ServicesContracts.Interfaces;
@@ -141,7 +142,7 @@ namespace ContactsManagerTests
                 DateOfBirth = DateTime.Parse("1999-03-03"),
                 ReceiveNewsLetters = true
             };
-            var actualValue = new List<PersonResponse>();
+            var expectedValue = new List<PersonResponse>();
             var listOfPersonRequest = new List<PersonAddRequest>()
             {
                 personAddRequest1,
@@ -150,19 +151,19 @@ namespace ContactsManagerTests
             };
 
             //Act
-            this._testOutputHelper.WriteLine("Actual Value:");
+            this._testOutputHelper.WriteLine("Expected Value:");
             foreach (var personAddRequest in listOfPersonRequest)
             {
-                actualValue.Add(this._personsService.AddPerson(personAddRequest));
+                expectedValue.Add(this._personsService.AddPerson(personAddRequest));
             }
-            foreach (var personResponse in actualValue)
+            foreach (var personResponse in expectedValue)
             {
                 this._testOutputHelper.WriteLine(personResponse.ToString());
             }
 
-            this._testOutputHelper.WriteLine("Expected Value: ");
-            var expectedValue = this._personsService.GetAllPersons();
-            foreach (var personResponse in expectedValue)
+            this._testOutputHelper.WriteLine("Actual Value: ");
+            var actualValue = this._personsService.GetAllPersons();
+            foreach (var personResponse in actualValue)
             {
                 this._testOutputHelper.WriteLine(personResponse.ToString());
             }
@@ -216,6 +217,170 @@ namespace ContactsManagerTests
 
             //Assert
             Assert.Equal(expectedValue, actualValue);
+        }
+        #endregion
+
+        #region GetFilteredPersons
+        [Fact]
+        public void GetFilteredPersons_EmptySearchString()
+        {
+            //Arrange
+            var countryAddRequest1 = new CountryAddRequest()
+            {
+                CountryName = "USA"
+            };
+            var countryAddRequest2 = new CountryAddRequest()
+            {
+                CountryName = "India"
+            };
+            var countryResponse1 = this._countriesService.AddCountry(countryAddRequest1);
+            var countryResponse2 = this._countriesService.AddCountry(countryAddRequest2);
+
+            var personAddRequest1 = new PersonAddRequest()
+            {
+                PersonName = "Smith",
+                Email = "smith@example.com",
+                Gender = GenderOptions.Male,
+                Address = "address of smith",
+                CountryId = countryResponse1.CountryId,
+                DateOfBirth = DateTime.Parse("2002-05-06"),
+                ReceiveNewsLetters = true
+            };
+            var personAddRequest2 = new PersonAddRequest()
+            {
+                PersonName = "Mary",
+                Email = "mary@example.com",
+                Gender = GenderOptions.Female,
+                Address = "address of mary",
+                CountryId = countryResponse2.CountryId,
+                DateOfBirth = DateTime.Parse("2000-02-02"),
+                ReceiveNewsLetters = false
+            };
+            var personAddRequest3 = new PersonAddRequest()
+            {
+                PersonName = "Rahman",
+                Email = "rahman@example.com",
+                Gender = GenderOptions.Male,
+                Address = "address of rahman",
+                CountryId = countryResponse1.CountryId,
+                DateOfBirth = DateTime.Parse("1999-03-03"),
+                ReceiveNewsLetters = true
+            };
+            var expectedValue = new List<PersonResponse>();
+            var listOfPersonRequest = new List<PersonAddRequest>()
+            {
+                personAddRequest1,
+                personAddRequest2,
+                personAddRequest3
+            };
+
+            //Act
+            this._testOutputHelper.WriteLine("Expected Value:");
+            foreach (var personAddRequest in listOfPersonRequest)
+            {
+                expectedValue.Add(this._personsService.AddPerson(personAddRequest));
+            }
+            foreach (var personResponse in expectedValue)
+            {
+                this._testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            this._testOutputHelper.WriteLine("Actual Value: ");
+            var actualValue = this._personsService.GetFilteredPersons(nameof(Person.PersonName), "");
+            foreach (var personResponse in actualValue)
+            {
+                this._testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            //Assert
+            foreach (var personResponse in expectedValue)
+            {
+                Assert.Contains(personResponse, actualValue);
+            }
+        }
+
+        [Fact]
+        public void GetFilteredPersons_SearchByPersonName()
+        {
+            //Arrange
+            var countryAddRequest1 = new CountryAddRequest()
+            {
+                CountryName = "USA"
+            };
+            var countryAddRequest2 = new CountryAddRequest()
+            {
+                CountryName = "India"
+            };
+            var countryResponse1 = this._countriesService.AddCountry(countryAddRequest1);
+            var countryResponse2 = this._countriesService.AddCountry(countryAddRequest2);
+
+            var personAddRequest1 = new PersonAddRequest()
+            {
+                PersonName = "Smith",
+                Email = "smith@example.com",
+                Gender = GenderOptions.Male,
+                Address = "address of smith",
+                CountryId = countryResponse1.CountryId,
+                DateOfBirth = DateTime.Parse("2002-05-06"),
+                ReceiveNewsLetters = true
+            };
+            var personAddRequest2 = new PersonAddRequest()
+            {
+                PersonName = "Mary",
+                Email = "mary@example.com",
+                Gender = GenderOptions.Female,
+                Address = "address of mary",
+                CountryId = countryResponse2.CountryId,
+                DateOfBirth = DateTime.Parse("2000-02-02"),
+                ReceiveNewsLetters = false
+            };
+            var personAddRequest3 = new PersonAddRequest()
+            {
+                PersonName = "Rahman",
+                Email = "rahman@example.com",
+                Gender = GenderOptions.Male,
+                Address = "address of rahman",
+                CountryId = countryResponse1.CountryId,
+                DateOfBirth = DateTime.Parse("1999-03-03"),
+                ReceiveNewsLetters = true
+            };
+            var expectedValue = new List<PersonResponse>();
+            var listOfPersonRequest = new List<PersonAddRequest>()
+            {
+                personAddRequest1,
+                personAddRequest2,
+                personAddRequest3
+            };
+
+            //Act
+            this._testOutputHelper.WriteLine("Expected Value:");
+            foreach (var personAddRequest in listOfPersonRequest)
+            {
+                expectedValue.Add(this._personsService.AddPerson(personAddRequest));
+            }
+            foreach (var personResponse in expectedValue)
+            {
+                this._testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            this._testOutputHelper.WriteLine("Actual Value: ");
+            var actualValue = this._personsService.GetFilteredPersons(nameof(Person.PersonName), "ma");
+            foreach (var personResponse in actualValue)
+            {
+                this._testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            //Assert
+            foreach (var personResponse in expectedValue)
+            {
+                if(personResponse.PersonName is not null)
+                {
+                    if(personResponse.PersonName.Contains("ma", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Assert.Contains(personResponse, actualValue);
+                    }
+                }
+            }
         }
         #endregion
     }
