@@ -81,6 +81,84 @@ namespace ContactsManagerTests
         #endregion
 
         #region GetAllPersons
+        [Fact]
+        public void GetAllPersons_EmptyList()
+        {
+            //Arrange
+
+            //Act
+            var listOfPersons = this._personsService.GetAllPersons();
+
+            //Assert
+            Assert.Empty(listOfPersons);
+        }
+
+        [Fact]
+        public void GetAllPersons_AddFewPersons()
+        {
+            //Arrange
+            var countryAddRequest1 = new CountryAddRequest()
+            {
+                CountryName = "USA"
+            };
+            var countryAddRequest2 = new CountryAddRequest()
+            {
+                CountryName = "India"
+            };
+            var countryResponse1 = this._countriesService.AddCountry(countryAddRequest1);
+            var countryResponse2 = this._countriesService.AddCountry(countryAddRequest2);
+
+            var personAddRequest1 = new PersonAddRequest()
+            {
+                PersonName = "Smith",
+                Email = "smith@example.com",
+                Gender = GenderOptions.Male,
+                Address = "address of smith",
+                CountryId = countryResponse1.CountryId,
+                DateOfBirth = DateTime.Parse("2002-05-06"),
+                ReceiveNewsLetters = true
+            };
+            var personAddRequest2 = new PersonAddRequest()
+            {
+                PersonName = "Mary",
+                Email = "mary@example.com",
+                Gender = GenderOptions.Female,
+                Address = "address of mary",
+                CountryId = countryResponse2.CountryId,
+                DateOfBirth = DateTime.Parse("2000-02-02"),
+                ReceiveNewsLetters = false
+            };
+            var personAddRequest3 = new PersonAddRequest()
+            {
+                PersonName = "Rahman",
+                Email = "rahman@example.com",
+                Gender = GenderOptions.Male,
+                Address = "address of rahman",
+                CountryId = countryResponse1.CountryId,
+                DateOfBirth = DateTime.Parse("1999-03-03"),
+                ReceiveNewsLetters = true
+            };
+            var actualValue = new List<PersonResponse>();
+            var listOfPersonRequest = new List<PersonAddRequest>()
+            {
+                personAddRequest1,
+                personAddRequest2,
+                personAddRequest3
+            };
+
+            //Act
+            foreach (var personAddRequest in listOfPersonRequest)
+            {
+                actualValue.Add(this._personsService.AddPerson(personAddRequest));
+            }
+            var expectedValue = this._personsService.GetAllPersons();
+
+            //Assert
+            foreach (var personResponse in expectedValue)
+            {
+                Assert.Contains(personResponse, actualValue);
+            }
+        }
         #endregion
 
         #region GetPersonByPersonId
