@@ -43,6 +43,13 @@ namespace ServicesContracts.DTOs
         {
             return base.GetHashCode();
         }
+        public override string ToString()
+        {
+            return $"PersonId: {this.PersonId}, PersonName: {this.PersonName}, " +
+                   $"Email: {this.Email}, DateOfBirth: {this.DateOfBirth?.ToString("dd MM yyyy")}, " +
+                   $"Gender: {this.Gender}, CountryId: {this.CountryId}, " +
+                   $"Address: {this.Address}, ReceiveNewsLetters: {this.ReceiveNewsLetters}";
+        }
     }
     public static class PersonExtensions
     {
