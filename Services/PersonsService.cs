@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Services.Helpers;
 using ServicesContracts.DTOs;
 using ServicesContracts.Interfaces;
 using System;
@@ -32,10 +33,8 @@ namespace Services
             {
                 throw new ArgumentNullException(nameof(personAddRequest));
             }
-            if(personAddRequest.PersonName is null)
-            {
-                throw new ArgumentException("PersonName cant be null");
-            }
+
+            ValidationsHelper.ModelVaidation(personAddRequest);
 
             var personEntity = personAddRequest.ToPerson();
             personEntity.PersonId = Guid.NewGuid();
@@ -50,6 +49,24 @@ namespace Services
         public List<PersonResponse> GetAllPersons()
         {
             throw new NotImplementedException();
+        }
+
+        public PersonResponse? GetPersonByPersonId(Guid? personId)
+        {
+            if(personId == null)
+            {
+                return null;
+            }
+
+            var personEntity = this._people.FirstOrDefault(p => p.PersonId == personId);
+            if(personEntity == null)
+            {
+                return null;
+            }
+
+            var personResponse = this.ConvertPersonToPersonResponse(personEntity);
+
+            return personResponse;
         }
     }
 }
