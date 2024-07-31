@@ -79,5 +79,52 @@ namespace ContactsManagerTests
             Assert.Contains(personResponse, people);
         }
         #endregion
+
+        #region GetAllPersons
+        #endregion
+
+        #region GetPersonByPersonId
+        [Fact]
+        public void GetPersonByPersonId_NullPersonId()
+        {
+            //Arrange
+            Guid? personId = null;
+
+            //Act
+            var personResponse = this._personsService.GetPersonByPersonId(personId);
+
+            //Assert
+            Assert.Null(personResponse);
+        }
+
+        [Fact]
+        public void GetPersonById_ProperPersonId()
+        {
+            //Arrange
+            var countryAddRequest = new CountryAddRequest()
+            {
+                CountryName = "Japan"
+            };
+            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+
+            var personAddRequest = new PersonAddRequest()
+            {
+                PersonName = "person name...",
+                Email = "email@sample.com",
+                Address = "address",
+                CountryId = countryResponse.CountryId,
+                DateOfBirth = DateTime.Parse("2002-18-07"),
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = false
+            };
+            var actualValue = this._personsService.AddPerson(personAddRequest);
+
+            //Act
+            var expectedValue = this._personsService.GetPersonByPersonId(actualValue.PersonId);
+
+            //Assert
+            Assert.Equal(expectedValue, actualValue);
+        }
+        #endregion
     }
 }
