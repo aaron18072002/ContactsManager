@@ -36,6 +36,7 @@ namespace ServicesContracts.DTOs
                 Email = this.Email,
                 DateOfBirth = this.DateOfBirth,
                 Gender = this.Gender.ToString(),
+                CountryId = this.CountryId,
                 Address = this.Address,
                 ReceiveNewsLetters = this.ReceiveNewsLetters,
             };
