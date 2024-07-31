@@ -69,10 +69,10 @@ namespace ContactsManagerTests
                 DateOfBirth = DateTime.Parse("2002-07-18"),
                 ReceiveNewsLetters = true
             };
-            var people = this._personsService.GetAllPersons();
 
             //Act
             var personResponse = this._personsService.AddPerson(personAddRequest);
+            var people = this._personsService.GetAllPersons();
 
             //Assert
             Assert.True(personResponse.PersonId != Guid.Empty);
