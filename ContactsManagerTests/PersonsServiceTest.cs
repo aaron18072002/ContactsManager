@@ -2,6 +2,7 @@
 using ServicesContracts.DTOs;
 using ServicesContracts.Enums;
 using ServicesContracts.Interfaces;
+using Xunit.Abstractions;
 
 namespace ContactsManagerTests
 {
@@ -9,10 +10,12 @@ namespace ContactsManagerTests
     {
         private readonly IPersonsService _personsService;
         private readonly ICountriesService _countriesService;
-        public PersonsServiceTest()
+        private readonly ITestOutputHelper _testOutputHelper;
+        public PersonsServiceTest(ITestOutputHelper testOutputHelper)
         {
             this._personsService = new PersonsService();
             this._countriesService = new CountriesService();
+            this._testOutputHelper = testOutputHelper;
         }
         #region AddPerson
         [Fact]
@@ -147,11 +150,22 @@ namespace ContactsManagerTests
             };
 
             //Act
+            this._testOutputHelper.WriteLine("Actual Value:");
             foreach (var personAddRequest in listOfPersonRequest)
             {
                 actualValue.Add(this._personsService.AddPerson(personAddRequest));
             }
+            foreach (var personResponse in actualValue)
+            {
+                this._testOutputHelper.WriteLine(personResponse.ToString());
+            }
+
+            this._testOutputHelper.WriteLine("Expected Value: ");
             var expectedValue = this._personsService.GetAllPersons();
+            foreach (var personResponse in expectedValue)
+            {
+                this._testOutputHelper.WriteLine(personResponse.ToString());
+            }
 
             //Assert
             foreach (var personResponse in expectedValue)
