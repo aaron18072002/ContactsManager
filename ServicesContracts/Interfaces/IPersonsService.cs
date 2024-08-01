@@ -54,5 +54,12 @@ namespace ServicesContracts.Interfaces
         /// <param name="personUpdateRequest">Details of person to update, includes PersonId</param>
         /// <returns>Return an PersonResponse after updated</returns>
         PersonResponse UpdatePerson(PersonUpdateRequest? personUpdateRequest);
+
+        /// <summary>
+        /// Delete a person in datasource by given personId
+        /// </summary>
+        /// <param name="personId">A id of person who must be delete</param>
+        /// <returns>Return true or false</returns>
+        bool DeletePerson(Guid? personId);
     }
 }
