@@ -13,8 +13,11 @@ namespace ServicesContracts.DTOs
     {
         [Required(ErrorMessage = "PersonId cant be null or empty")]
         public Guid? PersonId { get; set; }
+
         [Required(ErrorMessage = "PersonName cant be null or empty")]
         public string? PersonName { get; set; }
+
+        [EmailAddress(ErrorMessage = "Email value should be a valid email")]
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public GenderOptions? Gender { get; set; }
