@@ -62,7 +62,7 @@ namespace ServicesContracts.DTOs
                 Gender = (GenderOptions)Enum.Parse(typeof(GenderOptions), this.Gender, true),
                 Address = this.Address,
                 CountryId = this.CountryId,
-                ReceiveNewsLetters = ReceiveNewsLetters
+                ReceiveNewsLetters = this.ReceiveNewsLetters
             };
         }
     }
