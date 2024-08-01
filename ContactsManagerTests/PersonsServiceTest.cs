@@ -518,6 +518,8 @@ namespace ContactsManagerTests
             {
                 PersonName = "John",
                 CountryId = countryResponse.CountryId,
+                Email = "abc@gmail.com",
+                Gender = GenderOptions.Male
             };
             var personResponse = this._personsService.AddPerson(personAddRequest);
             var personUpdateRequest = personResponse.ToPersonUpdateRequest();
@@ -548,7 +550,7 @@ namespace ContactsManagerTests
                 PersonName = "John",
                 CountryId = countryResponse.CountryId,
                 Address = "Abc road",
-                DateOfBirth = DateTime.Parse("2002-18-07"),
+                DateOfBirth = DateTime.Parse("2002-07-18"),
                 Email = "abc@example.com",
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = true
