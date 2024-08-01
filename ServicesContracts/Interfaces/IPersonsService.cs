@@ -47,5 +47,12 @@ namespace ServicesContracts.Interfaces
         /// <returns>Returns a list of PersonResponse after sorted</returns>
         List<PersonResponse> GetSortedPersons
             (List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrderOptions);
+
+        /// <summary>
+        /// Update an exist person in datasource
+        /// </summary>
+        /// <param name="personUpdateRequest">Details of person to update, includes PersonId</param>
+        /// <returns>Return an PersonResponse after updated</returns>
+        PersonResponse UpdatePerson(PersonUpdateRequest? personUpdateRequest);
     }
 }
