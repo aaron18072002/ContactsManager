@@ -466,5 +466,105 @@ namespace ContactsManagerTests
             }
         }
         #endregion
+
+        #region UpdatePerson
+
+        [Fact]
+        public void UpdatePerson_NullPersonUpdateRequest()
+        {
+            //Arrange
+            PersonUpdateRequest? personUpdateRequest = null;
+
+            //Act
+            Action action = () =>
+            {
+                this._personsService.UpdatePerson(personUpdateRequest);
+            };
+
+            //Assert
+            Assert.Throws<ArgumentNullException>(action);
+        }
+
+        [Fact]
+        public void UpdatePerson_InvalidPersonId()
+        {
+            //Arrange
+            var personUpdateRequest = new PersonUpdateRequest()
+            {
+                PersonId = Guid.NewGuid(),
+            };
+
+            //Act
+            Action action = () =>
+            {
+                this._personsService.UpdatePerson(personUpdateRequest);
+            };
+
+            //Assert
+            Assert.Throws<ArgumentException>(action);
+        }
+
+        [Fact]
+        public void UpdatePerson_NullPersonName()
+        {
+            //Arrange
+            var countryAddRequest = new CountryAddRequest()
+            {
+                CountryName = "USA"
+            };
+            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+
+            var personAddRequest = new PersonAddRequest()
+            {
+                PersonName = "John",
+                CountryId = countryResponse.CountryId,
+            };
+            var personResponse = this._personsService.AddPerson(personAddRequest);
+            var personUpdateRequest = personResponse.ToPersonUpdateRequest();
+            personUpdateRequest.PersonName = null;
+
+            //Act
+            Action action = () =>
+            {
+                this._personsService.UpdatePerson(personUpdateRequest);
+            };
+
+            //Assert
+            Assert.Throws<ArgumentException>(action);
+        }
+
+        [Fact]
+        public void UpdatePerson_ProperPersonUpdateRequest()
+        {
+            //Arrange
+            var countryAddRequest = new CountryAddRequest()
+            {
+                CountryName = "USA"
+            };
+            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+
+            var personAddRequest = new PersonAddRequest()
+            {
+                PersonName = "John",
+                CountryId = countryResponse.CountryId,
+                Address = "Abc road",
+                DateOfBirth = DateTime.Parse("2002-18-07"),
+                Email = "abc@example.com",
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = true
+            };
+            var personResponse = this._personsService.AddPerson(personAddRequest);
+            var personUpdateRequest = personResponse.ToPersonUpdateRequest();
+            personUpdateRequest.PersonName = "Nemo";
+            personUpdateRequest.Email = "nemo@gmail.com";
+
+            //Act
+            var actualValue = this._personsService.UpdatePerson(personUpdateRequest);
+            var expectedValue = this._personsService.GetPersonByPersonId(personUpdateRequest.PersonId);
+
+            //Assert
+            Assert.Equal(expectedValue, actualValue);
+        }
+        #endregion
     }
 }
