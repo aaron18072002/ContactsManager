@@ -14,8 +14,8 @@ namespace ContactsManagerTests
         private readonly ITestOutputHelper _testOutputHelper;
         public PersonsServiceTest(ITestOutputHelper testOutputHelper)
         {
-            this._personsService = new PersonsService();
-            this._countriesService = new CountriesService();
+            this._personsService = new PersonsService(false);
+            this._countriesService = new CountriesService(false);
             this._testOutputHelper = testOutputHelper;
         }
         #region AddPerson
