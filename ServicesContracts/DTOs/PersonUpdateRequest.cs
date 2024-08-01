@@ -13,6 +13,7 @@ namespace ServicesContracts.DTOs
     {
         [Required]
         public Guid? PersonId { get; set; }
+        [Required]
         public string? PersonName { get; set; }
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
