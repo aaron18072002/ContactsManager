@@ -568,5 +568,51 @@ namespace ContactsManagerTests
             Assert.Equal(expectedValue, actualValue);
         }
         #endregion
+
+        #region DeletePerson
+
+        [Fact]
+        public void DeletePerson_ValidPersonId()
+        {
+            //Arrange
+            var countryAddRequest = new CountryAddRequest()
+            {
+                CountryName = "USA"
+            };
+            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+
+            var personAddRequest = new PersonAddRequest()
+            {
+                PersonName = "Jones",
+                Address = "address",
+                CountryId = countryResponse.CountryId,
+                DateOfBirth = Convert.ToDateTime("2002-07-18"),
+                Email = "jones@example.com",
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = true
+            };
+            var personResponse = this._personsService.AddPerson(personAddRequest);
+
+            //Act
+            var isSucess = this._personsService.DeletePerson(personResponse.PersonId); 
+
+            //Assert
+            Assert.True(isSucess);
+        }
+
+        [Fact]
+        public void DeletePerson_InvalidPersonId()
+        {
+            //Arrange
+            var invalidId = Guid.NewGuid();
+
+            //Act
+            var isValid = this._personsService.DeletePerson(invalidId);
+
+            //Assert
+            Assert.False(isValid);
+        }
+
+        #endregion
     }
 }
