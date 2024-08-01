@@ -1,4 +1,5 @@
 ﻿using Entities;
+using ServicesContracts.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,20 @@ namespace ServicesContracts.DTOs
                    $"Email: {this.Email}, DateOfBirth: {this.DateOfBirth?.ToString("dd MM yyyy")}, " +
                    $"Gender: {this.Gender}, CountryId: {this.CountryId}, " +
                    $"Address: {this.Address}, ReceiveNewsLetters: {this.ReceiveNewsLetters}";
+        }
+        public PersonUpdateRequest ToPersonUpdateRequest()
+        {
+            return new PersonUpdateRequest()
+            {
+                PersonId = this.PersonId,
+                PersonName = this.PersonName,
+                Email = this.Email,
+                DateOfBirth = this.DateOfBirth,
+                Gender = (GenderOptions)Enum.Parse(typeof(GenderOptions), this.Gender, true),
+                Address = this.Address,
+                CountryId = this.CountryId,
+                ReceiveNewsLetters = ReceiveNewsLetters
+            };
         }
     }
     public static class PersonExtensions

@@ -8,7 +8,7 @@ namespace Entities
 {
     public class Person
     {
-        public Guid PersonId { get; set; }
+        public Guid? PersonId { get; set; }
         public string? PersonName { get; set; }
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
