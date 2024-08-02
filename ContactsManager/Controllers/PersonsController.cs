@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
+using ServicesContracts.DTOs;
 using ServicesContracts.Interfaces;
 
 namespace ContactsManager.Controllers
@@ -14,17 +15,21 @@ namespace ContactsManager.Controllers
 
         [Route("/")]
         [Route("persons/index")]
-        public IActionResult Index()
+        public IActionResult Index
+            ([FromQuery]string searchBy, [FromQuery]string? searchString)
         {
-            var allPersons = this._personsService.GetAllPersons();
             ViewBag.SearchOptions = new Dictionary<string, string>()
             {
-                { nameof(Person.PersonName), "Person Name" },
-                { nameof(Person.Email), "Email" },
-                { nameof(Person.DateOfBirth), "Date of birth" },
-                { nameof(Person.Gender), "Gender" },
-                { nameof(Person.Address), "Address" }
+                { nameof(PersonResponse.PersonName), "Person Name" },
+                { nameof(PersonResponse.Email), "Email" },
+                { nameof(PersonResponse.DateOfBirth), "Date of birth" },
+                { nameof(PersonResponse.Gender), "Gender" },
+                { nameof(PersonResponse.Address), "Address" }
             };
+            var allPersons = this._personsService.GetFilteredPersons(searchBy, searchString);
+
+            ViewBag.CurrentSearchString = searchString;
+            ViewBag.CurrentSearchBy = searchBy;
 
             return View(allPersons);
         }
