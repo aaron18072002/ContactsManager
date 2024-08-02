@@ -304,7 +304,7 @@ namespace Services
             matchingPerson.DateOfBirth = personEntityToUpdate.DateOfBirth;
             matchingPerson.ReceiveNewsLetters = personEntityToUpdate.ReceiveNewsLetters;
 
-            var personResponse = matchingPerson.ToPersonResponse();
+            var personResponse = this.ConvertPersonToPersonResponse(matchingPerson);
 
             return personResponse;
         }
