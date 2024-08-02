@@ -5,19 +5,26 @@
 <form href="~/persons/index" method="get">
     <div class="box flex">
         <div class="flex-1">
-            <select class="form-input" name="searchString">
+            <select class="form-input" name="searchBy">
                 @foreach(KeyValuePair<string, string> option in ViewBag.SearchOptions)
                 {
-                    <option value="@option.Key">@option.Value</option>
+                    if(option.Key == ViewBag.CurrentSearchBy)
+                    {                        
+                        <option value="@option.Key" selected="selected">@option.Value</option>
+                    } else
+                    {
+                        <option value="@option.Key">@option.Value</option>
+                    }
                 }
             </select>
         </div>
         <div class="flex-1">
-            <input type="search" id="search" class="form-input" placeholder="Search" name="searchString" />
+            <input type="search" id="search" class="form-input" placeholder="Search" name="searchString" 
+                value="@ViewBag.CurrentSearchString" />
         </div>
         <div class="flex-1">
-            <button class="button button-blue-back" type="button" >Search</button>
-            <a href="~/persons/index">Clear all</a>
+            <button class="button button-blue-back" type="submit" >Search</button>
+            <a href="~/persons/index" class="link-hover">Clear all</a>
         </div>
     </div>
     <h1>Persons</h1>
