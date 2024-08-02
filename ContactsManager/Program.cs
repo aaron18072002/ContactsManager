@@ -1,3 +1,6 @@
+using Services;
+using ServicesContracts.Interfaces;
+
 namespace ContactsManager
 {
     public class Program
@@ -5,7 +8,11 @@ namespace ContactsManager
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSingleton<ICountriesService, CountriesService>();
+            builder.Services.AddSingleton<IPersonsService, PersonsService>();
+
             var app = builder.Build();
 
             if(app.Environment.IsDevelopment())
