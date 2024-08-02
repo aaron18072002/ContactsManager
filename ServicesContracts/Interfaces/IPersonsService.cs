@@ -46,7 +46,7 @@ namespace ServicesContracts.Interfaces
         /// <param name="sortOrderOptions">ASC and DESC</param>
         /// <returns>Returns a list of PersonResponse after sorted</returns>
         List<PersonResponse> GetSortedPersons
-            (List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrderOptions);
+            (List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrderOption);
 
         /// <summary>
         /// Update an exist person in datasource

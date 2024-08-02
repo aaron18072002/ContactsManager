@@ -232,14 +232,14 @@ namespace Services
         }
 
         public List<PersonResponse> GetSortedPersons
-            (List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrderOptions)
+            (List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrderOption)
         {
             if (sortBy is null)
             {
                 return allPersons;
             }
 
-            var sortedPersons = (sortBy, sortOrderOptions) switch
+            var sortedPersons = (sortBy, sortOrderOption) switch
             {
                 (nameof(PersonResponse.PersonName), SortOrderOptions.ASC) =>
                     allPersons.OrderBy(p => p.PersonName, StringComparer.OrdinalIgnoreCase).ToList(),
