@@ -18,8 +18,7 @@ namespace ContactsManager.Controllers
         [Route("persons/index")]
         public IActionResult Index
             ([FromQuery]string searchBy, [FromQuery]string? searchString,
-             [FromQuery]string sortBy = nameof(PersonResponse.PersonName), 
-             [FromQuery]SortOrderOptions sortOrderOption = SortOrderOptions.ASC)
+             [FromQuery]string sortBy, [FromQuery]SortOrderOptions sortOrderOption)
         {
             ViewBag.SearchOptions = new Dictionary<string, string>()
             {
