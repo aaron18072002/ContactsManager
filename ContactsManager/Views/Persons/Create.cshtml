@@ -5,15 +5,16 @@
 }
 
 <a asp-controller="Persons" asp-action="Index" class="link-hover">Back to Persons list</a>
-
-<div class="w-50">
+<h2>Create Person</h2>
+<div class="center-box">
     <form asp-controller="Persons" asp-action="Create" method="post">
         <div class="form-field flex">
             <div class="w-25">
                 <label for="PersonName" class="form-label pt">Person Name</label>
             </div>
-            <div class="flex-1">
+            <div class="flex-1 w-75">
                 <input asp-for=PersonName type="text" class="form-input" />
+                <span asp-validation-for="PersonName" class="text-red"></span>
             </div>
         </div>
 
@@ -21,8 +22,9 @@
             <div class="w-25">
                 <label for="Email" class="form-label pt">Email</label>
             </div>
-            <div class="flex-1">
+            <div class="flex-1 w-75">
                 <input asp-for=Email type="email" class="form-input" />
+                <span asp-validation-for="Email" class="text-red"></span>
             </div>
         </div>
 
@@ -30,8 +32,9 @@
             <div class="w-25">
                 <label for="DateOfBirth" class="form-label pt">Date Of Birth</label>
             </div>
-            <div class="flex-1">
+            <div class="flex-1 w-75">
                 <input asp-for=DateOfBirth type="date" class="form-input" />
+                <span asp-validation-for="DateOfBirth" class="text-red"></span>
             </div>
         </div>
 
@@ -39,15 +42,16 @@
             <div class="w-25">
                 <label for="Gender" class="form-label pt">Gender</label>
             </div>
-            <div class="flex-1">
+            <div class="flex-1 w-75">
                 @{
                     var genders = Enum.GetNames(typeof(GenderOptions));
                 }
-                @foreach(string gender in genders)
-                {                  
+                @foreach (string gender in genders)
+                {
                     <input type="radio" asp-for="Gender" value=@gender class="ml" />
                     <label for=@gender>@gender</label>
                 }
+                <span asp-validation-for="Gender" class="text-red"></span>
             </div>
         </div>
 
@@ -55,14 +59,15 @@
             <div class="w-25">
                 <label for="CountryId" class="form-label">Country</label>
             </div>
-            <div class="flex-1">
+            <div class="flex-1 w-75">
                 <select name="CountryId" id="CountryId" class="form-input">
                     <option value="">Please select</option>
-                    @foreach(CountryResponse country in ViewBag.Countries)
+                    @foreach (CountryResponse country in ViewBag.Countries)
                     {
                         <option value="@country.CountryId">@country.CountryName</option>
                     }
                 </select>
+                <span asp-validation-for="CountryId" class="text-red"></span>
             </div>
         </div>
 
@@ -70,29 +75,31 @@
             <div class="w-25">
                 <label for="Address" class="form-label pt">Address</label>
             </div>
-            <div class="flex-1">
+            <div class="flex-1 w-75">
                 <textarea id="Address" asp-for=Address class="form-input"></textarea>
+                <span asp-validation-for="Address" class="text-red"></span>
             </div>
         </div>
 
         <div class="form-field flex">
             <div class="w-25">
             </div>
-            <div class="flex-1">
+            <div class="flex-1 w-75">
                 <input type="checkbox" asp-for=ReceiveNewsLetters value="true" />
                 <label for="ReceiveNewsLetters" class="form-label pt">ReceiveNewsLetters</label>
+                <span asp-validation-for="ReceiveNewsLetters" class="text-red"></span>
             </div>
         </div>
 
-         <div class="form-field flex">
+        <div class="form-field flex">
             <div class="w-25">
             </div>
-            <div class="flex-1">
+            <div class="flex-1 w-75">
                 <button class="button button-green-back">Create</button>
-                @if(ViewBag.Errors is not null)
+                @if (ViewBag.Errors is not null)
                 {
                     <ul>
-                        @foreach(string error in ViewBag.Errors)
+                        @foreach (string error in ViewBag.Errors)
                         {
                             <li class="text-red">@error</li>
                         }
@@ -102,3 +109,21 @@
         </div>
     </form>
 </div>
+
+@section scripts 
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+            asp-fallback-test="window.jQuery"
+            asp-fallback-src="~/jquery.min.js">
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.4/jquery.validate.min.js"
+            asp-fallback-test="window.jQuery.validator"
+            asp-fallback-src="~/jquery.validate.min.js">
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"
+            asp-fallback-test="window.jQuery.validator.unobstrusive" 
+            asp-fallback-src="~/jquery.validate.unobtrusive.min.js">
+    </script>
+}
