@@ -43,8 +43,8 @@ namespace ContactsManager.Controllers
             return View(sortedPersons);
         }
 
-        [Route("persons/create")]
         [HttpGet]
+        [Route("persons/create")]
         public IActionResult Create()
         {
             var countries = this._countriesService.GetAllCountries();
@@ -52,6 +52,26 @@ namespace ContactsManager.Controllers
             ViewBag.Countries = countries;
 
             return View();
+        }
+
+        [HttpPost]
+        [Route("persons/create")]
+        public IActionResult Create([FromForm] PersonAddRequest personAddRequest)
+        {
+            if(!ModelState.IsValid)
+            {
+                var countries = this._countriesService.GetAllCountries();
+
+                ViewBag.Countries = countries;
+                ViewBag.Errors =  
+                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+
+                return View("create");  
+            }
+
+            this._personsService.AddPerson(personAddRequest);
+
+            return RedirectToAction("index", "persons");
         }
     }
 }
