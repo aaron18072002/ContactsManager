@@ -9,9 +9,11 @@ namespace ContactsManager.Controllers
     public class PersonsController : Controller
     {
         private IPersonsService _personsService;
-        public PersonsController(IPersonsService personsService)
+        private ICountriesService _countriesService;
+        public PersonsController(IPersonsService personsService, ICountriesService countriesService)
         {
             this._personsService = personsService;
+            this._countriesService = countriesService;
         }
 
         [Route("/")]
@@ -39,6 +41,17 @@ namespace ContactsManager.Controllers
             ViewBag.CurrentSortOrderOption = sortOrderOption.ToString();
 
             return View(sortedPersons);
+        }
+
+        [Route("persons/create")]
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var countries = this._countriesService.GetAllCountries();
+
+            ViewBag.Countries = countries;
+
+            return View();
         }
     }
 }
