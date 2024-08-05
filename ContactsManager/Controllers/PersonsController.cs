@@ -6,6 +6,7 @@ using ServicesContracts.Interfaces;
 
 namespace ContactsManager.Controllers
 {
+    [Route("[controller]")]
     public class PersonsController : Controller
     {
         private IPersonsService _personsService;
@@ -17,7 +18,7 @@ namespace ContactsManager.Controllers
         }
 
         [Route("/")]
-        [Route("persons/index")]
+        [Route("[action]")]
         public IActionResult Index
             ([FromQuery]string searchBy, [FromQuery]string? searchString,
              [FromQuery]string sortBy, [FromQuery]SortOrderOptions sortOrderOption)
@@ -44,7 +45,7 @@ namespace ContactsManager.Controllers
         }
 
         [HttpGet]
-        [Route("persons/create")]
+        [Route("[action]")]
         public IActionResult Create()
         {
             var countries = this._countriesService.GetAllCountries();
@@ -55,7 +56,7 @@ namespace ContactsManager.Controllers
         }
 
         [HttpPost]
-        [Route("persons/create")]
+        [Route("[action]")]
         public IActionResult Create([FromForm] PersonAddRequest personAddRequest)
         {
             if(!ModelState.IsValid)
