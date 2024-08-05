@@ -421,7 +421,10 @@ a.link-hover:hover
     display: inline-block;
 }
 
-
+.center-box {
+    margin: auto;
+    width: 90%;
+}
 
 
 @media screen and (min-width: 1000px)
