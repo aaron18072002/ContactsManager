@@ -20,8 +20,10 @@ namespace ServicesContracts.DTOs
 
         public DateTime? DateOfBirth { get; set; }
 
+        [Required(ErrorMessage = "Please select a gender")]
         public GenderOptions? Gender { get; set; }
 
+        [Required(ErrorMessage = "Please select your country")]
         public Guid? CountryId { get; set; }
 
         public string? Address { get; set; }
