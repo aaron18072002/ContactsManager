@@ -1,0 +1,64 @@
+﻿@{
+    ViewBag.Title = "Create";
+}
+
+<a href="~/persons/index" class="link-hover">Back to Persons list</a>
+
+<div class="w-50">
+    <form action="~/persons/create">
+        <div class="form-field flex">
+            <div class="w-25">
+                <label for="PersonName" class="form-label pt">Person Name</label>
+            </div>
+            <div class="flex-1">
+                <input type="text" id="PersonName" name="PersonName" class="form-input" />
+            </div>
+        </div>
+
+        <div class="form-field flex">
+            <div class="w-25">
+                <label for="Email" class="form-label pt">Email</label>
+            </div>
+            <div class="flex-1">
+                <input type="email" id="Email" name="Email" class="form-input" />
+            </div>
+        </div>
+
+        <div class="form-field flex">
+            <div class="w-25">
+                <label for="DateOfBirth" class="form-label pt">Date Of Birth</label>
+            </div>
+            <div class="flex-1">
+                <input type="date" id="DateOfBirth" name="DateOfBirth" class="form-input" />
+            </div>
+        </div>
+
+        <div class="form-field flex">
+            <div class="w-25">
+                <label for="Gender" class="form-label pt">Gender</label>
+            </div>
+            <div class="flex-1">
+                <label for="Male" class="form-label">Male</label>
+                <input type="radio" name="Male" id="Male" value="Male" class="ml" />
+
+                <label for="Female" class="form-label">Female</label>
+                <input type="radio" name="Female" id="Female" class="ml" />
+            </div>
+        </div>
+
+        <div class="form-field flex">
+            <div class="w-25">
+                <label for="CountryId" class="form-label">Country</label>
+            </div>
+            <div class="flex-1">
+                <select name="CountryId" id="CountryId" class="form-input">
+                    <option value="">Please select</option>
+                    @foreach(CountryResponse country in ViewBag.Countries)
+                    {
+                        <option value="@country.CountryId">@country.CountryName</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
