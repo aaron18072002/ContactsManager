@@ -1,11 +1,11 @@
 ﻿@{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Person";
 }
 
 <a href="~/persons/index" class="link-hover">Back to Persons list</a>
 
 <div class="w-50">
-    <form action="~/persons/create">
+    <form action="~/persons/create" method="post">
         <div class="form-field flex">
             <div class="w-25">
                 <label for="PersonName" class="form-label pt">Person Name</label>
@@ -38,11 +38,11 @@
                 <label for="Gender" class="form-label pt">Gender</label>
             </div>
             <div class="flex-1">
-                <label for="Male" class="form-label">Male</label>
-                <input type="radio" name="Male" id="Male" value="Male" class="ml" />
+                <input type="radio" name="Gender" id="Male" value="Male" class="ml" />
+                <label for="Male">Male</label>
 
-                <label for="Female" class="form-label">Female</label>
-                <input type="radio" name="Female" id="Female" class="ml" />
+                <input type="radio" name="Gender" id="Female" value="Female" class="ml" />
+                <label for="Female">Female</label>
             </div>
         </div>
 
@@ -58,6 +58,41 @@
                         <option value="@country.CountryId">@country.CountryName</option>
                     }
                 </select>
+            </div>
+        </div>
+
+        <div class="form-field flex">
+            <div class="w-25">
+                <label for="Address" class="form-label pt">Address</label>
+            </div>
+            <div class="flex-1">
+                <textarea id="Address" name="Address" class="form-input"></textarea>
+            </div>
+        </div>
+
+        <div class="form-field flex">
+            <div class="w-25">
+            </div>
+            <div class="flex-1">
+                <input type="checkbox" id="ReceiveNewsLetters" name="ReceiveNewsLetters" value="true" />
+                <label for="ReceiveNewsLetters" class="form-label pt">ReceiveNewsLetters</label>
+            </div>
+        </div>
+
+         <div class="form-field flex">
+            <div class="w-25">
+            </div>
+            <div class="flex-1">
+                <button class="button button-green-back">Create</button>
+                @if(ViewBag.Errors is not null)
+                {
+                    <ul>
+                        @foreach(string error in ViewBag.Errors)
+                        {
+                            <li class="text-red">@error</li>
+                        }
+                    </ul>
+                }
             </div>
         </div>
     </form>
