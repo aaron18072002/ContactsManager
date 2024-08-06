@@ -121,5 +121,34 @@ namespace ContactsManager.Controllers
                 return View(personUpdateRequest);
             }
         }
+
+        [HttpGet]
+        [Route("[action]/{personId?}")]
+        public IActionResult Delete([FromRoute]Guid? personId)
+        {
+            var personResponse = this._personsService.GetPersonByPersonId(personId);
+            if(personResponse is null)
+            {
+                return RedirectToAction("Index", "Persons");
+            }
+
+            return View(personResponse);
+        }
+
+        [HttpPost]
+        [Route("[action]/{personId?}")]
+        public IActionResult Delete([FromForm]PersonUpdateRequest personUpdateResult)
+        {
+            var personResponse = this._personsService.GetPersonByPersonId(personUpdateResult.PersonId);
+
+            if(personResponse is null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            this._personsService.DeletePerson(personResponse.PersonId);
+
+            return RedirectToAction("Index","Persons");
+        }
     }
 }
