@@ -1,3 +1,5 @@
+using Entities;
+using Microsoft.EntityFrameworkCore;
 using Services;
 using ServicesContracts.Interfaces;
 
@@ -12,6 +14,11 @@ namespace ContactsManager
             builder.Services.AddControllersWithViews();
             builder.Services.AddSingleton<ICountriesService, CountriesService>();
             builder.Services.AddSingleton<IPersonsService, PersonsService>();
+
+            builder.Services.AddDbContext<ContactsManagerDbContext>(options =>
+            {
+                options.UseSqlServer();
+            });
 
             var app = builder.Build();
 
