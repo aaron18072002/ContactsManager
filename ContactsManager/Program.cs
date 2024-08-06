@@ -17,7 +17,7 @@ namespace ContactsManager
 
             builder.Services.AddDbContext<ContactsManagerDbContext>(options =>
             {
-                options.UseSqlServer();
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? "");
             });
 
             var app = builder.Build();
