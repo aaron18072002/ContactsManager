@@ -74,5 +74,52 @@ namespace ContactsManager.Controllers
 
             return RedirectToAction("index", "persons");
         }
+
+        [HttpGet]
+        [Route("[action]/{personId}")]
+        public IActionResult Edit([FromRoute]Guid personId) 
+        {
+            var person = this._personsService.GetPersonByPersonId(personId);
+            if(person is null)
+            {
+                return RedirectToAction("Index", "Persons");
+            }
+            
+            var personUpdateRequest = person.ToPersonUpdateRequest();
+
+            var countries = this._countriesService.GetAllCountries();
+            ViewBag.Countries = countries;
+
+            return View(personUpdateRequest);
+        }
+
+        [HttpPost]
+        [Route("[action]/{personId}")]
+        public IActionResult Edit([FromForm]PersonUpdateRequest personUpdateRequest)
+        {
+            var person = this._personsService.GetPersonByPersonId(personUpdateRequest.PersonId);
+
+            if(person is null)
+            {
+                return RedirectToAction("Index", "Persons");
+            }
+
+            if(ModelState.IsValid)
+            {
+                var personResponse = this._personsService.UpdatePerson(personUpdateRequest);
+
+                return RedirectToAction("Index", "Persons");
+            }
+            else
+            {
+                var countries = this._countriesService.GetAllCountries();
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+
+                ViewBag.Countries = countries;
+                ViewBag.Errors = errors;    
+
+                return View(personUpdateRequest);
+            }
+        }
     }
 }
