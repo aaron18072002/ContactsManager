@@ -12,6 +12,10 @@ namespace Entities
     {
         public DbSet<Country>? Countries { get; set; }
         public DbSet<Person>? Persons { get; set; }
+        public ContactsManagerDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+        {
+
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -39,10 +43,10 @@ namespace Entities
 
             //Seed data for Countries table
             var countriesFromJson = new StringBuilder();
-            using(var streamReader = new StreamReader("countries.json"))
+            using (var streamReader = new StreamReader("countries.json"))
             {
                 string? line;
-                while((line = streamReader.ReadLine()) is not null)
+                while ((line = streamReader.ReadLine()) is not null)
                 {
                     countriesFromJson.AppendLine(line);
                 }
