@@ -67,6 +67,9 @@ namespace Entities
                 .HasColumnType("varchar(8)")
                 .HasDefaultValue("ABC12345")
                 .IsRequired(false);
+
+            modelBuilder.Entity<Person>()
+                .HasCheckConstraint("CHK_TIN", "len([TIN])=8");
         }
 
         public List<Person> sp_GetAllPersons()
