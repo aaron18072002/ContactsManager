@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using Services;
 using ServicesContracts.DTOs;
 using ServicesContracts.Enums;
@@ -14,8 +15,10 @@ namespace ContactsManagerTests
         private readonly ITestOutputHelper _testOutputHelper;
         public PersonsServiceTest(ITestOutputHelper testOutputHelper)
         {
-            this._personsService = new PersonsService(false);
-            this._countriesService = new CountriesService(false);
+            var contactsManagerDbContext = new ContactsManagerDbContext
+                (new DbContextOptionsBuilder<ContactsManagerDbContext>().Options);
+            this._personsService = new PersonsService(contactsManagerDbContext);
+            this._countriesService = new CountriesService(contactsManagerDbContext);
             this._testOutputHelper = testOutputHelper;
         }
         #region AddPerson
