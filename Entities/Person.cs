@@ -34,7 +34,7 @@ namespace Entities
         //bit
         public bool ReceiveNewsLetters { get; set; }
 
-        [Column(TypeName = "varchar(8)")]
+        [Column(TypeName = "varchar(8)")] //TextIdentificationNumber
         public string? TIN { get; set; }
     }
 }
