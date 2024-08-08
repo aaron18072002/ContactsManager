@@ -54,7 +54,9 @@ namespace Services
             var response = this?._db?.Persons?.ToList()
                 .Select(p => this.ConvertPersonToPersonResponse(p)).ToList();
 
-            return response ?? new List<PersonResponse>();
+            //return response ?? new List<PersonResponse>();
+
+            return this._db.sp_GetAllPersons().Select(p => this.ConvertPersonToPersonResponse(p)).ToList();
         }
 
         public PersonResponse? GetPersonByPersonId(Guid? personId)
