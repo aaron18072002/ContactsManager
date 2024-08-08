@@ -60,6 +60,13 @@ namespace Entities
                     modelBuilder.Entity<Country>().HasData(country);
                 }
             }
+
+            //Fluent API
+            modelBuilder.Entity<Person>().Property(p => p.TIN)
+                .HasColumnName("TIN")
+                .HasColumnType("varchar(8)")
+                .HasDefaultValue("ABC12345")
+                .IsRequired(false);
         }
 
         public List<Person> sp_GetAllPersons()
