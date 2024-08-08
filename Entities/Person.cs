@@ -33,5 +33,8 @@ namespace Entities
 
         //bit
         public bool ReceiveNewsLetters { get; set; }
+
+        [Column(TypeName = "varchar(8)")]
+        public string? TIN { get; set; }
     }
 }
