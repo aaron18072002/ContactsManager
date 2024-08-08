@@ -41,8 +41,10 @@ namespace Services
             var personEntity = personAddRequest.ToPerson();
             personEntity.PersonId = Guid.NewGuid();
 
-            this?._db?.Persons?.Add(personEntity);
-            this._db.SaveChanges();
+            //this?._db?.Persons?.Add(personEntity);
+            //this._db.SaveChanges();
+
+            this._db.sp_InsertPerson(personEntity);
 
             var personResponse = this.ConvertPersonToPersonResponse(personEntity);
 
