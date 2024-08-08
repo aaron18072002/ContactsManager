@@ -60,5 +60,12 @@ namespace Entities
                 }
             }
         }
+
+        public List<Person> sp_GetAllPersons()
+        {
+            var result = this?.Persons?.FromSqlRaw("EXECUTE [dbo].[GetAllPersons]").ToList();
+
+            return result ?? new List<Person>();
+        }
     }
 }
