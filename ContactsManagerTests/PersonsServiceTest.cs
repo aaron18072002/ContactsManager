@@ -23,23 +23,23 @@ namespace ContactsManagerTests
         }
         #region AddPerson
         [Fact]
-        public void AddPerson_NullPersonAddRequest()
+        public async Task AddPerson_NullPersonAddRequest()
         {
             //Arrange
             PersonAddRequest? personAddRequest = null;
 
             //Act
-            var action = () =>
+            var action = async () =>
             {
-                this._personsService.AddPerson(personAddRequest);
+                await this._personsService.AddPerson(personAddRequest);
             };
 
             //Assert
-            Assert.Throws<ArgumentNullException>(action);
+            await Assert.ThrowsAsync<ArgumentNullException>(action);
         }
 
         [Fact]
-        public void AddPerson_PersonNameIsNull()
+        public async Task AddPerson_PersonNameIsNull()
         {
             //Arrange
             var personAddRequest = new PersonAddRequest()
@@ -48,24 +48,24 @@ namespace ContactsManagerTests
             };
 
             //Act
-            var action = () =>
+            var action = async () =>
             {
-                this._personsService.AddPerson(personAddRequest);
+                await this._personsService.AddPerson(personAddRequest);
             };
 
             //Assert
-            Assert.Throws<ArgumentException>(action);   
+            await Assert.ThrowsAsync<ArgumentException>(action);   
         }
 
         [Fact]        
-        public void AddPerson_ProperPersonDetails()
+        public async Task AddPerson_ProperPersonDetails()
         {
             //Arrange
             var countryAddRequest = new CountryAddRequest()
             {
                 CountryName = "Japan"
             };
-            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+            var countryResponse = await this._countriesService.AddCountry(countryAddRequest);
             var personAddRequest = new PersonAddRequest()
             {
                 PersonName = "Person name...",
@@ -78,8 +78,8 @@ namespace ContactsManagerTests
             };
 
             //Act
-            var personResponse = this._personsService.AddPerson(personAddRequest);
-            var people = this._personsService.GetAllPersons();
+            var personResponse = await this._personsService.AddPerson(personAddRequest);
+            var people = await this._personsService.GetAllPersons();
 
             //Assert
             Assert.True(personResponse.PersonId != Guid.Empty);
@@ -89,19 +89,19 @@ namespace ContactsManagerTests
 
         #region GetAllPersons
         [Fact]
-        public void GetAllPersons_EmptyList()
+        public async Task GetAllPersons_EmptyList()
         {
             //Arrange
 
             //Act
-            var listOfPersons = this._personsService.GetAllPersons();
+            var listOfPersons = await this._personsService.GetAllPersons();
 
             //Assert
             Assert.Empty(listOfPersons);
         }
 
         [Fact]
-        public void GetAllPersons_AddFewPersons()
+        public async Task GetAllPersons_AddFewPersons()
         {
             //Arrange
             var countryAddRequest1 = new CountryAddRequest()
@@ -112,8 +112,8 @@ namespace ContactsManagerTests
             {
                 CountryName = "India"
             };
-            var countryResponse1 = this._countriesService.AddCountry(countryAddRequest1);
-            var countryResponse2 = this._countriesService.AddCountry(countryAddRequest2);
+            var countryResponse1 = await this._countriesService.AddCountry(countryAddRequest1);
+            var countryResponse2 = await this._countriesService.AddCountry(countryAddRequest2);
 
             var personAddRequest1 = new PersonAddRequest()
             {
@@ -157,7 +157,7 @@ namespace ContactsManagerTests
             this._testOutputHelper.WriteLine("Expected Value:");
             foreach (var personAddRequest in listOfPersonRequest)
             {
-                expectedValue.Add(this._personsService.AddPerson(personAddRequest));
+                expectedValue.Add(await this._personsService.AddPerson(personAddRequest));
             }
             foreach (var personResponse in expectedValue)
             {
@@ -165,7 +165,7 @@ namespace ContactsManagerTests
             }
 
             this._testOutputHelper.WriteLine("Actual Value: ");
-            var actualValue = this._personsService.GetAllPersons();
+            var actualValue = await this._personsService.GetAllPersons();
             foreach (var personResponse in actualValue)
             {
                 this._testOutputHelper.WriteLine(personResponse.ToString());
@@ -181,27 +181,27 @@ namespace ContactsManagerTests
 
         #region GetPersonByPersonId
         [Fact]
-        public void GetPersonByPersonId_NullPersonId()
+        public async Task GetPersonByPersonId_NullPersonId()
         {
             //Arrange
             Guid? personId = null;
 
             //Act
-            var personResponse = this._personsService.GetPersonByPersonId(personId);
+            var personResponse = await this._personsService.GetPersonByPersonId(personId);
 
             //Assert
             Assert.Null(personResponse);
         }
 
         [Fact]
-        public void GetPersonById_ProperPersonId()
+        public async Task GetPersonById_ProperPersonId()
         {
             //Arrange
             var countryAddRequest = new CountryAddRequest()
             {
                 CountryName = "Japan"
             };
-            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+            var countryResponse = await this._countriesService.AddCountry(countryAddRequest);
 
             var personAddRequest = new PersonAddRequest()
             {
@@ -213,10 +213,10 @@ namespace ContactsManagerTests
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = false
             };
-            var actualValue = this._personsService.AddPerson(personAddRequest);
+            var actualValue = await this._personsService.AddPerson(personAddRequest);
 
             //Act
-            var expectedValue = this._personsService.GetPersonByPersonId(actualValue.PersonId);
+            var expectedValue = await this._personsService.GetPersonByPersonId(actualValue.PersonId);
 
             //Assert
             Assert.Equal(expectedValue, actualValue);
@@ -225,7 +225,7 @@ namespace ContactsManagerTests
 
         #region GetFilteredPersons
         [Fact]
-        public void GetFilteredPersons_EmptySearchString()
+        public async Task GetFilteredPersons_EmptySearchString()
         {
             //Arrange
             var countryAddRequest1 = new CountryAddRequest()
@@ -236,8 +236,8 @@ namespace ContactsManagerTests
             {
                 CountryName = "India"
             };
-            var countryResponse1 = this._countriesService.AddCountry(countryAddRequest1);
-            var countryResponse2 = this._countriesService.AddCountry(countryAddRequest2);
+            var countryResponse1 = await this._countriesService.AddCountry(countryAddRequest1);
+            var countryResponse2 = await this._countriesService.AddCountry(countryAddRequest2);
 
             var personAddRequest1 = new PersonAddRequest()
             {
@@ -281,7 +281,7 @@ namespace ContactsManagerTests
             this._testOutputHelper.WriteLine("Expected Value:");
             foreach (var personAddRequest in listOfPersonRequest)
             {
-                expectedValue.Add(this._personsService.AddPerson(personAddRequest));
+                expectedValue.Add(await this._personsService.AddPerson(personAddRequest));
             }
             foreach (var personResponse in expectedValue)
             {
@@ -289,7 +289,7 @@ namespace ContactsManagerTests
             }
 
             this._testOutputHelper.WriteLine("Actual Value: ");
-            var actualValue = this._personsService.GetFilteredPersons(nameof(Person.PersonName), "");
+            var actualValue = await this._personsService.GetFilteredPersons(nameof(Person.PersonName), "");
             foreach (var personResponse in actualValue)
             {
                 this._testOutputHelper.WriteLine(personResponse.ToString());
@@ -303,7 +303,7 @@ namespace ContactsManagerTests
         }
 
         [Fact]
-        public void GetFilteredPersons_SearchByPersonName()
+        public async Task GetFilteredPersons_SearchByPersonName()
         {
             //Arrange
             var countryAddRequest1 = new CountryAddRequest()
@@ -314,8 +314,8 @@ namespace ContactsManagerTests
             {
                 CountryName = "India"
             };
-            var countryResponse1 = this._countriesService.AddCountry(countryAddRequest1);
-            var countryResponse2 = this._countriesService.AddCountry(countryAddRequest2);
+            var countryResponse1 = await this._countriesService.AddCountry(countryAddRequest1);
+            var countryResponse2 = await this._countriesService.AddCountry(countryAddRequest2);
 
             var personAddRequest1 = new PersonAddRequest()
             {
@@ -359,7 +359,7 @@ namespace ContactsManagerTests
             this._testOutputHelper.WriteLine("Expected Value:");
             foreach (var personAddRequest in listOfPersonRequest)
             {
-                expectedValue.Add(this._personsService.AddPerson(personAddRequest));
+                expectedValue.Add(await this._personsService.AddPerson(personAddRequest));
             }
             foreach (var personResponse in expectedValue)
             {
@@ -367,7 +367,7 @@ namespace ContactsManagerTests
             }
 
             this._testOutputHelper.WriteLine("Actual Value: ");
-            var actualValue = this._personsService.GetFilteredPersons(nameof(Person.PersonName), "ma");
+            var actualValue = await this._personsService.GetFilteredPersons(nameof(Person.PersonName), "ma");
             foreach (var personResponse in actualValue)
             {
                 this._testOutputHelper.WriteLine(personResponse.ToString());
@@ -389,7 +389,7 @@ namespace ContactsManagerTests
 
         #region GetSortedPersons
         [Fact]
-        public void GetSortedPersons_DescendingPersons()
+        public async Task GetSortedPersons_DescendingPersons()
         {
             //Arrange
             var countryAddRequest1 = new CountryAddRequest()
@@ -400,8 +400,8 @@ namespace ContactsManagerTests
             {
                 CountryName = "India"
             };
-            var countryResponse1 = this._countriesService.AddCountry(countryAddRequest1);
-            var countryResponse2 = this._countriesService.AddCountry(countryAddRequest2);
+            var countryResponse1 = await this._countriesService.AddCountry(countryAddRequest1);
+            var countryResponse2 = await this._countriesService.AddCountry(countryAddRequest2);
 
             var personAddRequest1 = new PersonAddRequest()
             {
@@ -444,7 +444,7 @@ namespace ContactsManagerTests
             //Act
             foreach (var personAddRequest in listOfPersonRequest)
             {
-                allPersons.Add(this._personsService.AddPerson(personAddRequest));
+                allPersons.Add(await this._personsService.AddPerson(personAddRequest));
             }
 
             this._testOutputHelper.WriteLine("Actual Value: ");
@@ -473,23 +473,23 @@ namespace ContactsManagerTests
         #region UpdatePerson
 
         [Fact]
-        public void UpdatePerson_NullPersonUpdateRequest()
+        public async Task UpdatePerson_NullPersonUpdateRequest()
         {
             //Arrange
             PersonUpdateRequest? personUpdateRequest = null;
 
             //Act
-            Action action = () =>
+            var action = async () =>
             {
-                this._personsService.UpdatePerson(personUpdateRequest);
+                await this._personsService.UpdatePerson(personUpdateRequest);
             };
 
             //Assert
-            Assert.Throws<ArgumentNullException>(action);
+            await Assert.ThrowsAsync<ArgumentNullException>(action);
         }
 
         [Fact]
-        public void UpdatePerson_InvalidPersonId()
+        public async Task UpdatePerson_InvalidPersonId()
         {
             //Arrange
             var personUpdateRequest = new PersonUpdateRequest()
@@ -498,24 +498,24 @@ namespace ContactsManagerTests
             };
 
             //Act
-            Action action = () =>
+            var action = async () =>
             {
-                this._personsService.UpdatePerson(personUpdateRequest);
+                await this._personsService.UpdatePerson(personUpdateRequest);
             };
 
             //Assert
-            Assert.Throws<ArgumentException>(action);
+            await Assert.ThrowsAsync<ArgumentException>(action);
         }
 
         [Fact]
-        public void UpdatePerson_NullPersonName()
+        public async Task UpdatePerson_NullPersonName()
         {
             //Arrange
             var countryAddRequest = new CountryAddRequest()
             {
                 CountryName = "USA"
             };
-            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+            var countryResponse = await this._countriesService.AddCountry(countryAddRequest);
 
             var personAddRequest = new PersonAddRequest()
             {
@@ -524,7 +524,7 @@ namespace ContactsManagerTests
                 Email = "abc@gmail.com",
                 Gender = GenderOptions.Male
             };
-            var personResponse = this._personsService.AddPerson(personAddRequest);
+            var personResponse = await this._personsService.AddPerson(personAddRequest);
             var personUpdateRequest = personResponse.ToPersonUpdateRequest();
             personUpdateRequest.PersonName = null;
 
@@ -539,14 +539,14 @@ namespace ContactsManagerTests
         }
 
         [Fact]
-        public void UpdatePerson_ProperPersonUpdateRequest()
+        public async Task UpdatePerson_ProperPersonUpdateRequest()
         {
             //Arrange
             var countryAddRequest = new CountryAddRequest()
             {
                 CountryName = "USA"
             };
-            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+            var countryResponse = await this._countriesService.AddCountry(countryAddRequest);
 
             var personAddRequest = new PersonAddRequest()
             {
@@ -558,14 +558,14 @@ namespace ContactsManagerTests
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = true
             };
-            var personResponse = this._personsService.AddPerson(personAddRequest);
+            var personResponse = await this._personsService.AddPerson(personAddRequest);
             var personUpdateRequest = personResponse.ToPersonUpdateRequest();
             personUpdateRequest.PersonName = "Nemo";
             personUpdateRequest.Email = "nemo@gmail.com";
 
             //Act
-            var actualValue = this._personsService.UpdatePerson(personUpdateRequest);
-            var expectedValue = this._personsService.GetPersonByPersonId(personUpdateRequest.PersonId);
+            var actualValue = await this._personsService.UpdatePerson(personUpdateRequest);
+            var expectedValue = await this._personsService.GetPersonByPersonId(personUpdateRequest.PersonId);
 
             //Assert
             Assert.Equal(expectedValue, actualValue);
@@ -575,14 +575,14 @@ namespace ContactsManagerTests
         #region DeletePerson
 
         [Fact]
-        public void DeletePerson_ValidPersonId()
+        public async Task DeletePerson_ValidPersonId()
         {
             //Arrange
             var countryAddRequest = new CountryAddRequest()
             {
                 CountryName = "USA"
             };
-            var countryResponse = this._countriesService.AddCountry(countryAddRequest);
+            var countryResponse = await this._countriesService.AddCountry(countryAddRequest);
 
             var personAddRequest = new PersonAddRequest()
             {
@@ -594,23 +594,23 @@ namespace ContactsManagerTests
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = true
             };
-            var personResponse = this._personsService.AddPerson(personAddRequest);
+            var personResponse = await this._personsService.AddPerson(personAddRequest);
 
             //Act
-            var isSucess = this._personsService.DeletePerson(personResponse.PersonId); 
+            var isSucess = await this._personsService.DeletePerson(personResponse.PersonId); 
 
             //Assert
             Assert.True(isSucess);
         }
 
         [Fact]
-        public void DeletePerson_InvalidPersonId()
+        public async Task DeletePerson_InvalidPersonId()
         {
             //Arrange
             var invalidId = Guid.NewGuid();
 
             //Act
-            var isValid = this._personsService.DeletePerson(invalidId);
+            var isValid = await this._personsService.DeletePerson(invalidId);
 
             //Assert
             Assert.False(isValid);
