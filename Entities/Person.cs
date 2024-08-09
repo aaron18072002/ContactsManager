@@ -36,5 +36,8 @@ namespace Entities
 
         [Column(TypeName = "varchar(8)")] //TextIdentificationNumber
         public string? TIN { get; set; }
+
+        [ForeignKey(nameof(CountryId))]
+        public virtual Country? Country { get; set; }   
     }
 }

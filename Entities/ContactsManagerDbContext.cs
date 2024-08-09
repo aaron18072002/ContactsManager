@@ -70,6 +70,13 @@ namespace Entities
 
             modelBuilder.Entity<Person>()
                 .HasCheckConstraint("CHK_TIN", "len([TIN])=8");
+
+            //Tables relationship
+            modelBuilder.Entity<Person>()
+                .HasOne<Country>(p => p.Country)
+                .WithMany(c => c.Persons)
+                .HasForeignKey(p => p.CountryId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public List<Person> sp_GetAllPersons()
