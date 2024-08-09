@@ -235,12 +235,36 @@ namespace Services
             var streamWriter = new StreamWriter(memoryStream);
             var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture, leaveOpen: true);
 
-            csvWriter.WriteHeader<PersonResponse>();
+            csvWriter.WriteField(nameof(PersonResponse.PersonName));
+            csvWriter.WriteField(nameof(PersonResponse.Email));
+            csvWriter.WriteField(nameof(PersonResponse.DateOfBirth));
+            csvWriter.WriteField(nameof(PersonResponse.Age));
+            csvWriter.WriteField(nameof(PersonResponse.CountryName));
+            csvWriter.WriteField(nameof(PersonResponse.Address));
+            csvWriter.WriteField(nameof(PersonResponse.ReceiveNewsLetters));
             csvWriter.NextRecord();
 
-            var persons = this._db.Persons is not null ? 
-                this._db.Persons.Include("Country").Select(p => p.ToPersonResponse()).ToList() : new List<PersonResponse>();
-            await csvWriter.WriteRecordsAsync(persons);
+            var personEntities = this._db.Persons is not null ? 
+                await this._db.Persons.Include("Country").ToListAsync() : new List<Person>();
+            var persons = personEntities.Select(p => p.ToPersonResponse()).ToList();
+            foreach (var person in persons)
+            {
+                csvWriter.WriteField(person.PersonName);
+                csvWriter.WriteField(person.Email);
+                if(person.DateOfBirth is not null)
+                {
+                    csvWriter.WriteField(person.DateOfBirth.Value.ToString("dd-MM-yyyy"));
+                } else
+                {
+                    csvWriter.WriteField("");
+                }
+                csvWriter.WriteField(person.Age);
+                csvWriter.WriteField(person.CountryName);
+                csvWriter.WriteField(person.Address);
+                csvWriter.WriteField(person.ReceiveNewsLetters);
+                csvWriter.NextRecord();
+                csvWriter.Flush();
+            }
 
             memoryStream.Position = 0;
             return memoryStream;
