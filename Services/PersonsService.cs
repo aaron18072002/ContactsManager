@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using Services.Helpers;
 using ServicesContracts.DTOs;
 using ServicesContracts.Enums;
@@ -20,14 +21,14 @@ namespace Services
             this._db = contactsManagerDbContext;
             this._countriesService = new CountriesService(contactsManagerDbContext);
         }
-        private PersonResponse ConvertPersonToPersonResponse(Person person)
-        {
-            var personResponse = person.ToPersonResponse();
-            personResponse.CountryName = this._countriesService.GetCountryByCountryId
-                (personResponse.CountryId)?.CountryName;
+        //private PersonResponse ConvertPersonToPersonResponse(Person person)
+        //{
+        //    var personResponse = person.ToPersonResponse();
+        //    personResponse.CountryName = this._countriesService.GetCountryByCountryId
+        //        (personResponse.CountryId)?.CountryName;
 
-            return personResponse;
-        }
+        //    return personResponse;
+        //}
 
         public PersonResponse AddPerson(PersonAddRequest? personAddRequest)
         {
@@ -46,19 +47,19 @@ namespace Services
 
             this._db.sp_InsertPerson(personEntity);
 
-            var personResponse = this.ConvertPersonToPersonResponse(personEntity);
+            var personResponse = personEntity.ToPersonResponse();
 
             return personResponse;
         }
 
         public List<PersonResponse> GetAllPersons()
         {
-            var response = this?._db?.Persons?.ToList()
-                .Select(p => this.ConvertPersonToPersonResponse(p)).ToList();
+            var persons = this?._db?.Persons?.Include("Country").ToList();
+            var personsResponse = persons is not null ? persons.Select(p => p.ToPersonResponse()).ToList() : new List<PersonResponse>();
 
-            //return response ?? new List<PersonResponse>();
+            return personsResponse;
 
-            return this._db.sp_GetAllPersons().Select(p => this.ConvertPersonToPersonResponse(p)).ToList();
+            //return this._db.sp_GetAllPersons().Select(p => this.ConvertPersonToPersonResponse(p)).ToList();
         }
 
         public PersonResponse? GetPersonByPersonId(Guid? personId)
@@ -68,13 +69,13 @@ namespace Services
                 return null;
             }
 
-            var personEntity = this?._db?.Persons?.FirstOrDefault(p => p.PersonId == personId);
+            var personEntity = this?._db?.Persons?.Include("Country").FirstOrDefault(p => p.PersonId == personId);
             if (personEntity == null)
             {
                 return null;
             }
 
-            var personResponse = this.ConvertPersonToPersonResponse(personEntity);
+            var personResponse = personEntity.ToPersonResponse();
 
             return personResponse;
         }
@@ -198,7 +199,7 @@ namespace Services
 
             this._db.SaveChanges();
 
-            var personResponse = this.ConvertPersonToPersonResponse(matchingPerson);
+            var personResponse = personEntityToUpdate.ToPersonResponse();
 
             return personResponse;
         }
