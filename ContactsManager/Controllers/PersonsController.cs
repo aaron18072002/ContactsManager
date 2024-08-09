@@ -19,7 +19,7 @@ namespace ContactsManager.Controllers
 
         [Route("/")]
         [Route("[action]")]
-        public IActionResult Index
+        public async Task<IActionResult> Index
             ([FromQuery]string searchBy, [FromQuery]string? searchString,
              [FromQuery]string sortBy, [FromQuery]SortOrderOptions sortOrderOption)
         {
@@ -31,7 +31,7 @@ namespace ContactsManager.Controllers
                 { nameof(PersonResponse.Gender), "Gender" },
                 { nameof(PersonResponse.Address), "Address" }
             };
-            var persons = this._personsService.GetFilteredPersons(searchBy, searchString);
+            var persons = await this._personsService.GetFilteredPersons(searchBy, searchString);
 
             ViewBag.CurrentSearchString = searchString;
             ViewBag.CurrentSearchBy = searchBy;
@@ -46,9 +46,9 @@ namespace ContactsManager.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var countries = this._countriesService.GetAllCountries();
+            var countries = await this._countriesService.GetAllCountries();
 
             ViewBag.Countries = countries;
 
@@ -57,11 +57,11 @@ namespace ContactsManager.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult Create([FromForm] PersonAddRequest personAddRequest)
+        public async Task<IActionResult> Create([FromForm] PersonAddRequest personAddRequest)
         {
             if(!ModelState.IsValid)
             {
-                var countries = this._countriesService.GetAllCountries();
+                var countries = await this._countriesService.GetAllCountries();
 
                 ViewBag.Countries = countries;
                 ViewBag.Errors =  
@@ -70,16 +70,16 @@ namespace ContactsManager.Controllers
                 return View("create");  
             }
 
-            this._personsService.AddPerson(personAddRequest);
+            await this._personsService.AddPerson(personAddRequest);
 
             return RedirectToAction("index", "persons");
         }
 
         [HttpGet]
         [Route("[action]/{personId}")]
-        public IActionResult Edit([FromRoute]Guid personId) 
+        public async Task<IActionResult> Edit([FromRoute]Guid personId) 
         {
-            var person = this._personsService.GetPersonByPersonId(personId);
+            var person = await this._personsService.GetPersonByPersonId(personId);
             if(person is null)
             {
                 return RedirectToAction("Index", "Persons");
@@ -87,7 +87,7 @@ namespace ContactsManager.Controllers
             
             var personUpdateRequest = person.ToPersonUpdateRequest();
 
-            var countries = this._countriesService.GetAllCountries();
+            var countries = await this._countriesService.GetAllCountries();
             ViewBag.Countries = countries;
 
             return View(personUpdateRequest);
@@ -95,9 +95,9 @@ namespace ContactsManager.Controllers
 
         [HttpPost]
         [Route("[action]/{personId}")]
-        public IActionResult Edit([FromForm]PersonUpdateRequest personUpdateRequest)
+        public async Task<IActionResult> Edit([FromForm]PersonUpdateRequest personUpdateRequest)
         {
-            var person = this._personsService.GetPersonByPersonId(personUpdateRequest.PersonId);
+            var person = await this._personsService.GetPersonByPersonId(personUpdateRequest.PersonId);
 
             if(person is null)
             {
@@ -106,13 +106,13 @@ namespace ContactsManager.Controllers
 
             if(ModelState.IsValid)
             {
-                var personResponse = this._personsService.UpdatePerson(personUpdateRequest);
+                var personResponse = await this._personsService.UpdatePerson(personUpdateRequest);
 
                 return RedirectToAction("Index", "Persons");
             }
             else
             {
-                var countries = this._countriesService.GetAllCountries();
+                var countries = await this._countriesService.GetAllCountries();
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
 
                 ViewBag.Countries = countries;
@@ -124,9 +124,9 @@ namespace ContactsManager.Controllers
 
         [HttpGet]
         [Route("[action]/{personId?}")]
-        public IActionResult Delete([FromRoute]Guid? personId)
+        public async Task<IActionResult> Delete([FromRoute]Guid? personId)
         {
-            var personResponse = this._personsService.GetPersonByPersonId(personId);
+            var personResponse = await this._personsService.GetPersonByPersonId(personId);
             if(personResponse is null)
             {
                 return RedirectToAction("Index", "Persons");
@@ -137,16 +137,16 @@ namespace ContactsManager.Controllers
 
         [HttpPost]
         [Route("[action]/{personId?}")]
-        public IActionResult Delete([FromForm]PersonUpdateRequest personUpdateResult)
+        public async Task<IActionResult> Delete([FromForm]PersonUpdateRequest personUpdateResult)
         {
-            var personResponse = this._personsService.GetPersonByPersonId(personUpdateResult.PersonId);
+            var personResponse = await this._personsService.GetPersonByPersonId(personUpdateResult.PersonId);
 
             if(personResponse is null)
             {
                 return RedirectToAction("Index");
             }
 
-            this._personsService.DeletePerson(personResponse.PersonId);
+            await this._personsService.DeletePerson(personResponse.PersonId);
 
             return RedirectToAction("Index","Persons");
         }

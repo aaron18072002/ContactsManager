@@ -17,23 +17,23 @@ namespace ContactsManagerTests
 
         #region AddCountry
         [Fact]
-        public void AddCountry_NullCountry()
+        public async Task AddCountry_NullCountry()
         {
             //Arrange
             CountryAddRequest? request = null;
 
             //Act
-            var action = () =>
+            var action = async () =>
             {
-                this._countriesService.AddCountry(request);
+                await this._countriesService.AddCountry(request);
             };
 
             //Assert
-            Assert.Throws<ArgumentNullException>(action);
+            await Assert.ThrowsAsync<ArgumentNullException>(action);
         }
 
         [Fact]
-        public void AddCountry_CountryNameIsNull()
+        public async Task AddCountry_CountryNameIsNull()
         {
             //Arrange
             var request = new CountryAddRequest()
@@ -42,20 +42,20 @@ namespace ContactsManagerTests
             };
 
             //Act
-            var action = () =>
+            var action = async () =>
             {
-                this._countriesService.AddCountry(request);
+                await this._countriesService.AddCountry(request);
             };
 
             //Assert
-            Assert.Throws<ArgumentException>(action);
+            await Assert.ThrowsAsync<ArgumentException>(action);
         }
 
         [Fact]
-        public void AddCountry_DuplicateCountryName()
+        public async Task AddCountry_DuplicateCountryName()
         {
             //Arrange
-            this._countriesService.AddCountry(new CountryAddRequest()
+            await this._countriesService.AddCountry(new CountryAddRequest()
             {
                 CountryName = "Japan"
             });
@@ -65,17 +65,17 @@ namespace ContactsManagerTests
             };
 
             //Act
-            var action = () =>
+            var action = async () =>
             {
-                this._countriesService.AddCountry(request);
+                await this._countriesService.AddCountry(request);
             };
 
             //Assert
-            Assert.Throws<ArgumentException>(action);
+            await Assert.ThrowsAsync<ArgumentException>(action);
         }
 
         [Fact]
-        public void AddCountry_ProperCountryDetails()
+        public async Task AddCountry_ProperCountryDetails()
         {
             //Arrange
             var request = new CountryAddRequest()
@@ -84,8 +84,8 @@ namespace ContactsManagerTests
             };
 
             //Act
-            var response = this._countriesService.AddCountry(request);
-            var allCountries = this._countriesService.GetAllCountries();
+            var response = await this._countriesService.AddCountry(request);
+            var allCountries = await this._countriesService.GetAllCountries();
 
             //Assert
             Assert.True(response.CountryId != Guid.Empty);
@@ -95,19 +95,19 @@ namespace ContactsManagerTests
 
         #region GetAllCountries
         [Fact]
-        public void GetAllCountries_EmpltyList()
+        public async Task GetAllCountries_EmpltyList()
         {
             //Arrange
             
             //Act
-            var response = this._countriesService.GetAllCountries();
+            var response = await this._countriesService.GetAllCountries();
 
             //Assert
             Assert.Empty(response);
         }
 
         [Fact]
-        public void GetAllCountries_AddFewCountries()
+        public async Task GetAllCountries_AddFewCountries()
         {
             //Arrange
             var fewCountries = new List<CountryAddRequest>()
@@ -120,9 +120,9 @@ namespace ContactsManagerTests
             //Act
             foreach (var country in fewCountries)
             {
-                expectedValue.Add(this._countriesService.AddCountry(country));
+                expectedValue.Add(await this._countriesService.AddCountry(country));
             }
-            var actualValue = this._countriesService.GetAllCountries();
+            var actualValue = await this._countriesService.GetAllCountries();
 
             //Assert
             foreach (var expectedCountry in expectedValue)
@@ -134,31 +134,31 @@ namespace ContactsManagerTests
 
         #region GetCountryByCountryId
         [Fact]
-        public void GetCountryByCountryId_NullCountryId()
+        public async Task GetCountryByCountryId_NullCountryId()
         {
             //Arrange
             Guid? countryId = null;
 
             //Act
-            var response = this._countriesService.GetCountryByCountryId(countryId);
+            var response = await this._countriesService.GetCountryByCountryId(countryId);
 
             //Assert
             Assert.Null(response);
         }
 
         [Fact]
-        public void GetCountryById_ValidCountryId()
+        public async Task GetCountryById_ValidCountryId()
         {
             //Arrange
             var countryAddRequest = new CountryAddRequest()
             {
                 CountryName = "Japan"
             };
-            var expectedValue = this._countriesService.AddCountry(countryAddRequest);
+            var expectedValue = await this._countriesService.AddCountry(countryAddRequest);
             var countryId = expectedValue.CountryId;
 
             //Act
-            var actualValue = this._countriesService.GetCountryByCountryId(countryId);
+            var actualValue = await this._countriesService.GetCountryByCountryId(countryId);
 
             //Assert
             Assert.Equal(expectedValue, actualValue);
