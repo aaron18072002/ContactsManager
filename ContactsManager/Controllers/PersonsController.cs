@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;
 using ServicesContracts.DTOs;
 using ServicesContracts.Enums;
 using ServicesContracts.Interfaces;
@@ -149,6 +150,25 @@ namespace ContactsManager.Controllers
             await this._personsService.DeletePerson(personResponse.PersonId);
 
             return RedirectToAction("Index","Persons");
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IActionResult> PersonsPDF()
+        {
+            var persons = await this._personsService.GetAllPersons();
+
+            return new ViewAsPdf("PersonsPDF", persons, ViewData)
+            {
+                PageMargins = new Rotativa.AspNetCore.Options.Margins()
+                {
+                    Top = 20,
+                    Right = 20,
+                    Bottom = 20,
+                    Left = 20,
+                },
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+            };
         }
     }
 }
