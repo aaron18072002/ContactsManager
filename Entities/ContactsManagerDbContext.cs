@@ -86,7 +86,7 @@ namespace Entities
             return result ?? new List<Person>();
         }
 
-        public int sp_InsertPerson(Person person)
+        public async Task<int> sp_InsertPerson(Person person)
         {
             var parameters = new SqlParameter[]
             {
@@ -100,7 +100,7 @@ namespace Entities
                 new SqlParameter("@ReceiveNewsLetters", person.ReceiveNewsLetters),
             };
 
-            var result = this.Database.ExecuteSqlRaw
+            var result = await this.Database.ExecuteSqlRawAsync
                 ("EXECUTE [dbo].[InsertPerson] @PersonId, @PersonName, @Email, @DateOfBirth, @Gender, @CountryId, @Address, @ReceiveNewsLetters", parameters);
 
             return result;

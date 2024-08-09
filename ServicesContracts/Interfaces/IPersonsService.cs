@@ -15,20 +15,20 @@ namespace ServicesContracts.Interfaces
         /// </summary>
         /// <param name="personAddRequest">A person object to add</param>
         /// <returns>Returns the PersonResponse after adding it (including newly generated person id)</returns>
-        PersonResponse AddPerson(PersonAddRequest? personAddRequest);
+        Task<PersonResponse> AddPerson(PersonAddRequest? personAddRequest);
 
         /// <summary>
         /// Returns all people from datasource
         /// </summary>
         /// <returns>Returns list of person response object</returns>
-        List<PersonResponse> GetAllPersons();
+        Task<List<PersonResponse>> GetAllPersons();
 
         /// <summary>
         /// Returns a matching person from datasource based on the given id
         /// </summary>
         /// <param name="personId">PersonId to search</param>
         /// <returns>Return a PersonResponse type</returns>
-        PersonResponse? GetPersonByPersonId(Guid? personId);
+        Task<PersonResponse?> GetPersonByPersonId(Guid? personId);
 
         /// <summary>
         /// Returns a list of matching persons from datasource given searchBy and searchString
@@ -36,7 +36,7 @@ namespace ServicesContracts.Interfaces
         /// <param name="searchBy">SearchField to search</param>
         /// <param name="searchString">SearchValue to search</param>
         /// <returns>Returns all matching persons as a list of PersonResponse type</returns>
-        List<PersonResponse> GetFilteredPersons(string searchBy, string? searchString);
+        Task<List<PersonResponse>> GetFilteredPersons(string searchBy, string? searchString);
 
         /// <summary>
         /// Returns a list of sorted persons by given arguments
@@ -53,13 +53,13 @@ namespace ServicesContracts.Interfaces
         /// </summary>
         /// <param name="personUpdateRequest">Details of person to update, includes PersonId</param>
         /// <returns>Return an PersonResponse after updated</returns>
-        PersonResponse UpdatePerson(PersonUpdateRequest? personUpdateRequest);
+        Task<PersonResponse> UpdatePerson(PersonUpdateRequest? personUpdateRequest);
 
         /// <summary>
         /// Delete a person in datasource by given personId
         /// </summary>
         /// <param name="personId">A id of person who must be delete</param>
         /// <returns>Return true or false</returns>
-        bool DeletePerson(Guid? personId);
+        Task<bool> DeletePerson(Guid? personId);
     }
 }

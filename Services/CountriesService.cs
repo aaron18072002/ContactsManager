@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using ServicesContracts.DTOs;
 using ServicesContracts.Interfaces;
 
@@ -11,7 +12,7 @@ namespace Services
         {
             this._db = contactsManagerDbContext; 
         }
-        public CountryResponse AddCountry(CountryAddRequest? country)
+        public async Task<CountryResponse> AddCountry(CountryAddRequest? country)
         {
             if(country is null)
             {
@@ -23,7 +24,8 @@ namespace Services
                 throw new ArgumentException(nameof(country.CountryName));
             }
 
-            if(this?._db.Countries?.Count(c => c.CountryName == country.CountryName) > 0)
+            if(this._db.Countries is not null && 
+                await this._db.Countries.CountAsync(c => c.CountryName == country.CountryName) > 0)
             {
                 throw new ArgumentException("This CountryName already exists");
             }
@@ -32,26 +34,27 @@ namespace Services
             countryEntity.CountryId = Guid.NewGuid();
 
             this?._db?.Countries?.Add(countryEntity);
-            this._db.SaveChanges();
+            await this._db.SaveChangesAsync();
 
             return countryEntity.ToCountryResponse();
         }
-        public List<CountryResponse> GetAllCountries()
+        public async Task<List<CountryResponse>> GetAllCountries()
         {
-            var result = this?._db?.Countries?.ToList()
-                .Select(c => c.ToCountryResponse()).ToList();
+            var persons = this._db.Countries is not null ? await this._db.Countries.ToListAsync() : new List<Country>();
+
+            var result = persons.Select(c => c.ToCountryResponse()).ToList();
 
             return result ?? new List<CountryResponse>();
         }
-        public CountryResponse? GetCountryByCountryId(Guid? id)
+        public async Task<CountryResponse?> GetCountryByCountryId(Guid? id)
         {
             if(id ==  null)
             {
                 return null;
             }
 
-            var countryEntity = this?._db?.Countries?.FirstOrDefault
-                (c => c.CountryId == id);
+            var countryEntity = this._db.Countries is not null ?  await this._db.Countries.FirstOrDefaultAsync
+                (c => c.CountryId == id) : new Country();
 
             return countryEntity == null ? null : countryEntity.ToCountryResponse();
         }
