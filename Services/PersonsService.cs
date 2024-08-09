@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using CsvHelper;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 using Services.Helpers;
 using ServicesContracts.DTOs;
@@ -6,6 +7,7 @@ using ServicesContracts.Enums;
 using ServicesContracts.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -225,6 +227,23 @@ namespace Services
             await this._db.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<MemoryStream> GetPersonsCSV()
+        {
+            var memoryStream = new MemoryStream();
+            var streamWriter = new StreamWriter(memoryStream);
+            var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture, leaveOpen: true);
+
+            csvWriter.WriteHeader<PersonResponse>();
+            csvWriter.NextRecord();
+
+            var persons = this._db.Persons is not null ? 
+                this._db.Persons.Include("Country").Select(p => p.ToPersonResponse()).ToList() : new List<PersonResponse>();
+            await csvWriter.WriteRecordsAsync(persons);
+
+            memoryStream.Position = 0;
+            return memoryStream;
         }
     }
 }

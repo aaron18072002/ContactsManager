@@ -61,5 +61,7 @@ namespace ServicesContracts.Interfaces
         /// <param name="personId">A id of person who must be delete</param>
         /// <returns>Return true or false</returns>
         Task<bool> DeletePerson(Guid? personId);
+
+        Task<MemoryStream> GetPersonsCSV();
     }
 }
