@@ -78,9 +78,10 @@ namespace ServicesContracts.DTOs
                 DateOfBirth = person.DateOfBirth,
                 Gender = person.Gender,
                 CountryId = person.CountryId,
-                Address = person.Address,
-                ReceiveNewsLetters = person.ReceiveNewsLetters,
-                Age = person.DateOfBirth is not null ? 
+                CountryName = person?.Country?.CountryName,
+                Address = person?.Address,
+                ReceiveNewsLetters = person is not null ? person.ReceiveNewsLetters : false,
+                Age = person?.DateOfBirth is not null ? 
                     (int)Math.Round((DateTime.Now - person.DateOfBirth.Value).TotalDays / 365.25) : null
             };
         }
