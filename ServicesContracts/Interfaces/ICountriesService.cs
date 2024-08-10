@@ -1,4 +1,5 @@
-﻿using ServicesContracts.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using ServicesContracts.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,5 +32,7 @@ namespace ServicesContracts.Interfaces
         /// <param name="id">CountryId to search</param>
         /// <returns>Returns a CountryResponse or null</returns>
         Task<CountryResponse?> GetCountryByCountryId(Guid? id);
+
+        Task<int> UploadCountriesFromExcelFile(IFormFile formFile);
     }
 }
