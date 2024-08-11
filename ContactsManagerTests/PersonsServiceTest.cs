@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using AutoFixture;
+using Entities;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
 using Services;
@@ -11,6 +12,7 @@ namespace ContactsManagerTests
 {
     public class PersonsServiceTest
     {
+        private readonly IFixture _fixture;
         private readonly IPersonsService _personsService;
         private readonly ICountriesService _countriesService;
         private readonly ITestOutputHelper _testOutputHelper;
@@ -23,12 +25,13 @@ namespace ContactsManagerTests
             var countriesInitialize = new List<Country>();
             var personsInitialize = new List<Person>();
 
-            dbContextMock.CreateDbSetMock(t => t.Countries, countriesInitialize);
             dbContextMock.CreateDbSetMock(t => t.Persons, personsInitialize);
+            dbContextMock.CreateDbSetMock(t => t.Countries, countriesInitialize);
 
-            this._personsService = new PersonsService(dbContext);
             this._countriesService = new CountriesService(dbContext);
+            this._personsService = new PersonsService(dbContext, this._countriesService);
             this._testOutputHelper = testOutputHelper;
+            this._fixture = new Fixture();
         }
         #region AddPerson
         [Fact]
@@ -75,24 +78,17 @@ namespace ContactsManagerTests
                 CountryName = "Japan"
             };
             var countryResponse = await this._countriesService.AddCountry(countryAddRequest);
-            var personAddRequest = new PersonAddRequest()
-            {
-                PersonName = "Person name...",
-                Email = "person@example.com",
-                Address = "sample address",
-                CountryId = countryResponse.CountryId,
-                Gender = GenderOptions.Male,
-                DateOfBirth = DateTime.Parse("2002-07-18"),
-                ReceiveNewsLetters = true
-            };
+            var personAddRequest = this._fixture.Build<PersonAddRequest>()
+                .With(t => t.Email, "someone@gmail.com")
+                .Create();
 
             //Act
-            var personResponse = await this._personsService.AddPerson(personAddRequest);
-            var people = await this._personsService.GetAllPersons();
+            var expectedValue = await this._personsService.AddPerson(personAddRequest);
+            var actualValue = await this._personsService.GetPersonByPersonId(expectedValue.PersonId);
 
             //Assert
-            Assert.True(personResponse.PersonId != Guid.Empty);
-            Assert.Contains(personResponse, people);
+            //Assert.True(personResponse.PersonId != Guid.Empty);
+            Assert.Equal(expectedValue, actualValue);
         }
         #endregion
 
