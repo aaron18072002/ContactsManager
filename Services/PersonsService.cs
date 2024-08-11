@@ -19,10 +19,10 @@ namespace Services
     {
         private readonly ContactsManagerDbContext _db;
         private readonly ICountriesService _countriesService;
-        public PersonsService(ContactsManagerDbContext contactsManagerDbContext)
+        public PersonsService(ContactsManagerDbContext contactsManagerDbContext, ICountriesService countriesService)
         {
             this._db = contactsManagerDbContext;
-            this._countriesService = new CountriesService(contactsManagerDbContext);
+            this._countriesService = countriesService;
         }
         //private PersonResponse ConvertPersonToPersonResponse(Person person)
         //{
@@ -45,10 +45,10 @@ namespace Services
             var personEntity = personAddRequest.ToPerson();
             personEntity.PersonId = Guid.NewGuid();
 
-            //this?._db?.Persons?.Add(personEntity);
-            //this._db.SaveChanges();
+            this?._db?.Persons?.Add(personEntity);
+            await this._db.SaveChangesAsync();
 
-            await this._db.sp_InsertPerson(personEntity);
+            //await this._db.sp_InsertPerson(personEntity);
 
             var personResponse = personEntity.ToPersonResponse();
 

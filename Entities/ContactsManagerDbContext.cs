@@ -79,14 +79,14 @@ namespace Entities
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
-        public List<Person> sp_GetAllPersons()
+        public virtual List<Person> sp_GetAllPersons()
         {
             var result = this?.Persons?.FromSqlRaw("EXECUTE [dbo].[GetAllPersons]").ToList();
 
             return result ?? new List<Person>();
         }
 
-        public async Task<int> sp_InsertPerson(Person person)
+        public virtual async Task<int> sp_InsertPerson(Person person)
         {
             var parameters = new SqlParameter[]
             {
