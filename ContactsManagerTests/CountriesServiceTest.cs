@@ -1,4 +1,5 @@
 using Entities;
+using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
 using Services;
 using ServicesContracts.DTOs;
@@ -11,8 +12,14 @@ namespace ContactsManagerTests
         private readonly ICountriesService _countriesService;
         public CountriesServiceTest()
         {
-            this._countriesService = new CountriesService
-                (new ContactsManagerDbContext(new DbContextOptionsBuilder<ContactsManagerDbContext>().Options));
+            var dbContextMock = new DbContextMock<ContactsManagerDbContext>
+                (new DbContextOptionsBuilder<ContactsManagerDbContext>().Options);
+            var dbContext = dbContextMock.Object;
+
+            var coutriesInitialize = new List<Country>();
+            dbContextMock.CreateDbSetMock(t => t.Countries, coutriesInitialize);
+
+            this._countriesService = new CountriesService(dbContext);
         }
 
         #region AddCountry
