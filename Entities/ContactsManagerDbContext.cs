@@ -11,8 +11,8 @@ namespace Entities
 {
     public class ContactsManagerDbContext : DbContext
     {
-        public DbSet<Country>? Countries { get; set; }
-        public DbSet<Person>? Persons { get; set; }
+        public virtual DbSet<Country>? Countries { get; set; }
+        public virtual DbSet<Person>? Persons { get; set; }
         public ContactsManagerDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
 
