@@ -534,13 +534,13 @@ namespace ContactsManagerTests
             personUpdateRequest.PersonName = null;
 
             //Act
-            Action action = () =>
+            Func<Task> action = async () =>
             {
-                this._personsService.UpdatePerson(personUpdateRequest);
+                await this._personsService.UpdatePerson(personUpdateRequest);
             };
 
             //Assert
-            Assert.Throws<ArgumentException>(action);
+            await Assert.ThrowsAsync<ArgumentException>(action);
         }
 
         [Fact]
