@@ -8,8 +8,8 @@ namespace RepositoriesContracts
 
         Task<List<Country>> GetAllCountries();
 
-        Task<Country> GetCountryById(Guid countryId);
+        Task<Country?> GetCountryById(Guid countryId);
 
-        Task<Country> GetCountryByName(string countryName);                  
+        Task<Country?> GetCountryByName(string countryName);                  
     }
 }
