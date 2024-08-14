@@ -2,6 +2,7 @@
 using Entities;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
 using Services;
 using ServicesContracts.DTOs;
 using ServicesContracts.Enums;
@@ -28,7 +29,9 @@ namespace ContactsManagerTests
             dbContextMock.CreateDbSetMock(t => t.Persons, personsInitialize);
             dbContextMock.CreateDbSetMock(t => t.Countries, countriesInitialize);
 
-            this._countriesService = new CountriesService(dbContext);
+            var countriesRepository = new CountriesRepository(dbContext);
+
+            this._countriesService = new CountriesService(countriesRepository);
             this._personsService = new PersonsService(dbContext, this._countriesService);
             this._testOutputHelper = testOutputHelper;
             this._fixture = new Fixture();

@@ -1,6 +1,7 @@
 using Entities;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
 using Services;
 using ServicesContracts.DTOs;
 using ServicesContracts.Interfaces;
@@ -19,7 +20,9 @@ namespace ContactsManagerTests
             var coutriesInitialize = new List<Country>();
             dbContextMock.CreateDbSetMock(t => t.Countries, coutriesInitialize);
 
-            this._countriesService = new CountriesService(dbContext);
+            var countriesRepository = new CountriesRepository(dbContext);
+
+            this._countriesService = new CountriesService(countriesRepository);
         }
 
         #region AddCountry
