@@ -2,6 +2,7 @@
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using RepositoriesContracts;
 using Services.Helpers;
 using ServicesContracts.DTOs;
 using ServicesContracts.Enums;
@@ -17,21 +18,11 @@ namespace Services
 {
     public class PersonsService : IPersonsService
     {
-        private readonly ContactsManagerDbContext _db;
-        private readonly ICountriesService _countriesService;
-        public PersonsService(ContactsManagerDbContext contactsManagerDbContext, ICountriesService countriesService)
+        private readonly IPersonsRepository _personsRepository;
+        public PersonsService(IPersonsRepository personsRepository)
         {
-            this._db = contactsManagerDbContext;
-            this._countriesService = countriesService;
+            this._personsRepository = personsRepository;
         }
-        //private PersonResponse ConvertPersonToPersonResponse(Person person)
-        //{
-        //    var personResponse = person.ToPersonResponse();
-        //    personResponse.CountryName = this._countriesService.GetCountryByCountryId
-        //        (personResponse.CountryId)?.CountryName;
-
-        //    return personResponse;
-        //}
 
         public async Task<PersonResponse> AddPerson(PersonAddRequest? personAddRequest)
         {
@@ -45,10 +36,7 @@ namespace Services
             var personEntity = personAddRequest.ToPerson();
             personEntity.PersonId = Guid.NewGuid();
 
-            this?._db?.Persons?.Add(personEntity);
-            await this._db.SaveChangesAsync();
-
-            //await this._db.sp_InsertPerson(personEntity);
+            await this._personsRepository.AddPerson(personEntity);
 
             var personResponse = personEntity.ToPersonResponse();
 
@@ -57,8 +45,7 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetAllPersons()
         {
-            var persons = this._db.Persons is not null ? 
-                await this._db.Persons.Include("Country").ToListAsync() : new List<Person>();
+            var persons = await this._personsRepository.GetAllPersons();
             var personsResponse = persons.Select(p => p.ToPersonResponse()).ToList();
 
             return personsResponse;
@@ -73,8 +60,7 @@ namespace Services
                 return null;
             }
 
-            var personEntity = this._db.Persons is not null ? 
-                await this._db.Persons.Include("Country").FirstOrDefaultAsync(p => p.PersonId == personId) : null;
+            var personEntity = await this._personsRepository.GetPersonById(personId.Value);
             if (personEntity == null)
             {
                 return null;
@@ -87,46 +73,63 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetFilteredPersons(string searchBy, string? searchString)
         {
-            var allPersons = await this.GetAllPersons();
-            var matchingPersons = allPersons;
+            //var allPersons = await this.GetAllPersons();
+            //var matchingPersons = allPersons;
 
-            if (searchBy is null || searchString is null)
+            //if (searchBy is null || searchString is null)
+            //{
+            //    return allPersons;
+            //}
+
+            //switch (searchBy)
+            //{
+            //    case (nameof(PersonResponse.PersonName)):
+            //        matchingPersons = allPersons.Where
+            //            (p => !string.IsNullOrEmpty(p.PersonName) ? p.PersonName.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+            //        break;
+            //    case (nameof(PersonResponse.Email)):
+            //        matchingPersons = allPersons.Where
+            //            (p => !string.IsNullOrEmpty(p.Email) ? p.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+            //        break;
+            //    case (nameof(PersonResponse.DateOfBirth)):
+            //        matchingPersons = allPersons.Where
+            //            (p => p.DateOfBirth is not null ? p.DateOfBirth.Value.ToString("dd MMM yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+            //        break;
+            //    case (nameof(PersonResponse.Gender)):
+            //        matchingPersons = allPersons.Where
+            //            (p => !string.IsNullOrEmpty(p.Gender) ? p.Gender.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+            //        break;
+            //    case (nameof(PersonResponse.CountryId)):
+            //        matchingPersons = allPersons.Where
+            //            (p => !string.IsNullOrEmpty(p.CountryName) ? p.CountryName.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+            //        break;
+            //    case (nameof(PersonResponse.Address)):
+            //        matchingPersons = allPersons.Where
+            //            (p => !string.IsNullOrEmpty(p.Address) ? p.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+            //        break;
+            //    default:
+            //        matchingPersons = allPersons;
+            //        break;
+            //}
+
+            var matchingPersons = searchBy switch
             {
-                return allPersons;
-            }
+                nameof(PersonResponse.PersonName) => await this._personsRepository.GetFilteredPersons
+                    (p => p.PersonName.Contains(searchString)),
+                nameof(PersonResponse.Email) => await this._personsRepository.GetFilteredPersons
+                    (p => p.Email.Contains(searchString)),
+                nameof(PersonResponse.DateOfBirth) => await this._personsRepository.GetFilteredPersons
+                    (p => p.DateOfBirth.Value.ToString("dd-MM-yyyy").Contains(searchString)),
+                nameof(PersonResponse.Gender) => await this._personsRepository.GetFilteredPersons
+                    (p => p.Gender.Contains(searchString)),
+                nameof(PersonResponse.CountryId) => await this._personsRepository.GetFilteredPersons
+                    (p => p.Country.CountryName.Contains(searchString)),
+                nameof(PersonResponse.Address) => await this._personsRepository.GetFilteredPersons
+                    (p => p.Address.Contains(searchString)),
+                _ => await this._personsRepository.GetAllPersons()
+            };
 
-            switch (searchBy)
-            {
-                case (nameof(PersonResponse.PersonName)):
-                    matchingPersons = allPersons.Where
-                        (p => !string.IsNullOrEmpty(p.PersonName) ? p.PersonName.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-                    break;
-                case (nameof(PersonResponse.Email)):
-                    matchingPersons = allPersons.Where
-                        (p => !string.IsNullOrEmpty(p.Email) ? p.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-                    break;
-                case (nameof(PersonResponse.DateOfBirth)):
-                    matchingPersons = allPersons.Where
-                        (p => p.DateOfBirth is not null ? p.DateOfBirth.Value.ToString("dd MMM yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-                    break;
-                case (nameof(PersonResponse.Gender)):
-                    matchingPersons = allPersons.Where
-                        (p => !string.IsNullOrEmpty(p.Gender) ? p.Gender.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-                    break;
-                case (nameof(PersonResponse.CountryId)):
-                    matchingPersons = allPersons.Where
-                        (p => !string.IsNullOrEmpty(p.CountryName) ? p.CountryName.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-                    break;
-                case (nameof(PersonResponse.Address)):
-                    matchingPersons = allPersons.Where
-                        (p => !string.IsNullOrEmpty(p.Address) ? p.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-                    break;
-                default:
-                    matchingPersons = allPersons;
-                    break;
-            }
-
-            return matchingPersons;
+            return matchingPersons.Select(p => p.ToPersonResponse()).ToList();
         }
 
         public List<PersonResponse> GetSortedPersons
@@ -186,8 +189,7 @@ namespace Services
 
             ValidationsHelper.ModelVaidation(personUpdateRequest);
 
-            var matchingPerson = this._db.Persons is not null ? 
-                await this._db.Persons.FirstOrDefaultAsync(p => p.PersonId == personUpdateRequest.PersonId) : null;
+            var matchingPerson = await this._personsRepository.GetPersonById(personUpdateRequest.PersonId.Value);
             if(matchingPerson is null)
             {
                 throw new ArgumentException("This PersonId doesnt exists in datasource");
@@ -195,17 +197,19 @@ namespace Services
 
             var personEntityToUpdate = personUpdateRequest.ToPerson();
 
-            matchingPerson.PersonName = personEntityToUpdate.PersonName;
-            matchingPerson.Email = personEntityToUpdate.Email;
-            matchingPerson.Address = personEntityToUpdate.Address;
-            matchingPerson.Gender = personEntityToUpdate.Gender;
-            matchingPerson.CountryId = personEntityToUpdate.CountryId;
-            matchingPerson.DateOfBirth = personEntityToUpdate.DateOfBirth;
-            matchingPerson.ReceiveNewsLetters = personEntityToUpdate.ReceiveNewsLetters;
+            var updatedPerson = await this._personsRepository.UpdatePerson(personEntityToUpdate);
 
-            await this._db.SaveChangesAsync();
+            //matchingPerson.PersonName = personEntityToUpdate.PersonName;
+            //matchingPerson.Email = personEntityToUpdate.Email;
+            //matchingPerson.Address = personEntityToUpdate.Address;
+            //matchingPerson.Gender = personEntityToUpdate.Gender;
+            //matchingPerson.CountryId = personEntityToUpdate.CountryId;
+            //matchingPerson.DateOfBirth = personEntityToUpdate.DateOfBirth;
+            //matchingPerson.ReceiveNewsLetters = personEntityToUpdate.ReceiveNewsLetters;
 
-            var personResponse = personEntityToUpdate.ToPersonResponse();
+            //await this._db.SaveChangesAsync();
+
+            var personResponse = updatedPerson.ToPersonResponse();
 
             return personResponse;
         }
@@ -217,17 +221,18 @@ namespace Services
                 throw new ArgumentNullException(nameof(personId));  
             }
 
-            var matchingPerson = this._db.Persons is not null ?
-                await this._db.Persons.FirstOrDefaultAsync(p => p.PersonId == personId) : null;
+            var matchingPerson = this.GetPersonByPersonId(personId);
             if(matchingPerson is null)
             {
                 return false;
             }
 
-            var isSucess = this?._db?.Persons?.Remove(matchingPerson);
-            await this._db.SaveChangesAsync();
+            //var isSucess = this?._db?.Persons?.Remove(matchingPerson);
+            //await this._db.SaveChangesAsync();
 
-            return true;
+            var isSuccess = await this._personsRepository.DeletePerson(personId.Value);
+
+            return isSuccess;
         }
 
         public async Task<MemoryStream> GetPersonsCSV()
@@ -245,8 +250,7 @@ namespace Services
             csvWriter.WriteField(nameof(PersonResponse.ReceiveNewsLetters));
             csvWriter.NextRecord();
 
-            var personEntities = this._db.Persons is not null ? 
-                await this._db.Persons.Include("Country").ToListAsync() : new List<Person>();
+            var personEntities = await this._personsRepository.GetAllPersons();
             var persons = personEntities.Select(p => p.ToPersonResponse()).ToList();
             foreach (var person in persons)
             {
@@ -294,9 +298,8 @@ namespace Services
                 }
 
                 int row = 2;
-                var personEntites = this._db.Persons is not null ?
-                    await this._db.Persons.Include("Country").ToListAsync() : new List<Person>();
-                var persons = personEntites.Select(p => p.ToPersonResponse()).ToList();
+                var personEntities = await this._personsRepository.GetAllPersons();
+                var persons = personEntities.Select(p => p.ToPersonResponse()).ToList();
                 foreach (var person in persons)
                 {
                     workSheet.Cells[row, 1].Value = person.PersonName;
