@@ -30,9 +30,10 @@ namespace ContactsManagerTests
             dbContextMock.CreateDbSetMock(t => t.Countries, countriesInitialize);
 
             var countriesRepository = new CountriesRepository(dbContext);
+            var personsRepository = new PersonsRepository(dbContext);
 
             this._countriesService = new CountriesService(countriesRepository);
-            this._personsService = new PersonsService(dbContext, this._countriesService);
+            this._personsService = new PersonsService(personsRepository);
             this._testOutputHelper = testOutputHelper;
             this._fixture = new Fixture();
         }
