@@ -1,5 +1,7 @@
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
+using RepositoriesContracts;
 using Services;
 using ServicesContracts.Interfaces;
 
@@ -12,8 +14,12 @@ namespace ContactsManager
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
+
             builder.Services.AddScoped<ICountriesService, CountriesService>();
             builder.Services.AddScoped<IPersonsService, PersonsService>();
+
+            builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
+            builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
 
             builder.Services.AddDbContext<ContactsManagerDbContext>(options =>
             {
