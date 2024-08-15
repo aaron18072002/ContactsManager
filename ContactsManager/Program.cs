@@ -13,6 +13,13 @@ namespace ContactsManager
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Host.ConfigureLogging(logBuilder =>
+            {
+                logBuilder.ClearProviders();
+                logBuilder.AddConsole();
+                logBuilder.AddDebug();
+            });
+
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<ICountriesService, CountriesService>();
