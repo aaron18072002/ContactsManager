@@ -4,6 +4,7 @@ using Repositories;
 using RepositoriesContracts;
 using Services;
 using ServicesContracts.Interfaces;
+using Serilog;
 
 namespace ContactsManager
 {
@@ -13,14 +14,30 @@ namespace ContactsManager
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Host.ConfigureLogging(logBuilder =>
+            //builder.Host.ConfigureLogging(logBuilder =>
+            //{
+            //    logBuilder.ClearProviders();
+            //    logBuilder.AddConsole();
+            //    logBuilder.AddDebug();
+            //});
+
+            builder.Host.UseSerilog((context, services, loggerConfiguration) =>
             {
-                logBuilder.ClearProviders();
-                logBuilder.AddConsole();
-                logBuilder.AddDebug();
+                loggerConfiguration
+                    .ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Services(services); //read out current app's services and make them available to serilog
             });
 
-            builder.Services.AddHttpLogging(logging => { });
+            builder.Services.AddHttpLogging(logging =>
+            {
+                logging.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+                logging.RequestHeaders.Add("sec-ch-ua");
+                logging.ResponseHeaders.Add("MyResponseHeader");
+                logging.MediaTypeOptions.AddText("application/javascript");
+                logging.RequestBodyLogLimit = 4096;
+                logging.ResponseBodyLogLimit = 4096;
+                logging.CombineLogs = true;
+            });
 
             builder.Services.AddControllersWithViews();
 
