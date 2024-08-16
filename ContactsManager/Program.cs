@@ -20,6 +20,8 @@ namespace ContactsManager
                 logBuilder.AddDebug();
             });
 
+            builder.Services.AddHttpLogging(logging => { });
+
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<ICountriesService, CountriesService>();
@@ -34,6 +36,8 @@ namespace ContactsManager
             });
 
             var app = builder.Build();
+
+            app.UseHttpLogging();
 
             if(app.Environment.IsDevelopment())
             {
