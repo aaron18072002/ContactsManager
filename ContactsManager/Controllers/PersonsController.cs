@@ -10,12 +10,15 @@ namespace ContactsManager.Controllers
     [Route("[controller]")]
     public class PersonsController : Controller
     {
-        private IPersonsService _personsService;
-        private ICountriesService _countriesService;
-        public PersonsController(IPersonsService personsService, ICountriesService countriesService)
+        private readonly IPersonsService _personsService;
+        private readonly ICountriesService _countriesService;
+        private readonly ILogger<PersonsController> _logger;
+        public PersonsController
+            (IPersonsService personsService, ICountriesService countriesService, ILogger<PersonsController> logger)
         {
             this._personsService = personsService;
             this._countriesService = countriesService;
+            this._logger = logger;
         }
 
         [Route("/")]
@@ -24,6 +27,11 @@ namespace ContactsManager.Controllers
             ([FromQuery]string searchBy, [FromQuery]string? searchString,
              [FromQuery]string sortBy, [FromQuery]SortOrderOptions sortOrderOption)
         {
+            this._logger.LogInformation("Index action method of PersonsController");
+
+            this._logger.LogDebug($"searchBy: {searchBy}, searchString: {searchString}");
+            this._logger.LogDebug($"sortBy: {sortBy}, sortOrderOption: {sortOrderOption}");
+
             ViewBag.SearchOptions = new Dictionary<string, string>()
             {
                 { nameof(PersonResponse.PersonName), "Person Name" },

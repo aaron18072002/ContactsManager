@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoriesContracts;
 using Services.Helpers;
@@ -19,9 +20,12 @@ namespace Services
     public class PersonsService : IPersonsService
     {
         private readonly IPersonsRepository _personsRepository;
-        public PersonsService(IPersonsRepository personsRepository)
+        private readonly ILogger<PersonsService> _logger;
+        public PersonsService
+            (IPersonsRepository personsRepository, ILogger<PersonsService> logger)
         {
             this._personsRepository = personsRepository;
+            this._logger = logger;
         }
 
         public async Task<PersonResponse> AddPerson(PersonAddRequest? personAddRequest)
@@ -45,6 +49,8 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetAllPersons()
         {
+            this._logger.LogInformation("GetAllPersons from PersonsService");
+
             var persons = await this._personsRepository.GetAllPersons();
             var personsResponse = persons.Select(p => p.ToPersonResponse()).ToList();
 
@@ -73,68 +79,78 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetFilteredPersons(string searchBy, string? searchString)
         {
-            //var allPersons = await this.GetAllPersons();
-            //var matchingPersons = allPersons;
+            this._logger.LogInformation("GetFilteredPersons method of PersonsService");
 
-            //if (searchBy is null || searchString is null)
-            //{
-            //    return allPersons;
-            //}
+            this._logger.LogDebug($"searchBy: {searchBy}, searchString: {searchString}");
 
-            //switch (searchBy)
-            //{
-            //    case (nameof(PersonResponse.PersonName)):
-            //        matchingPersons = allPersons.Where
-            //            (p => !string.IsNullOrEmpty(p.PersonName) ? p.PersonName.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-            //        break;
-            //    case (nameof(PersonResponse.Email)):
-            //        matchingPersons = allPersons.Where
-            //            (p => !string.IsNullOrEmpty(p.Email) ? p.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-            //        break;
-            //    case (nameof(PersonResponse.DateOfBirth)):
-            //        matchingPersons = allPersons.Where
-            //            (p => p.DateOfBirth is not null ? p.DateOfBirth.Value.ToString("dd MMM yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-            //        break;
-            //    case (nameof(PersonResponse.Gender)):
-            //        matchingPersons = allPersons.Where
-            //            (p => !string.IsNullOrEmpty(p.Gender) ? p.Gender.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-            //        break;
-            //    case (nameof(PersonResponse.CountryId)):
-            //        matchingPersons = allPersons.Where
-            //            (p => !string.IsNullOrEmpty(p.CountryName) ? p.CountryName.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-            //        break;
-            //    case (nameof(PersonResponse.Address)):
-            //        matchingPersons = allPersons.Where
-            //            (p => !string.IsNullOrEmpty(p.Address) ? p.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
-            //        break;
-            //    default:
-            //        matchingPersons = allPersons;
-            //        break;
-            //}
+            var allPersons = await this.GetAllPersons();
+            var matchingPersons = allPersons;
 
-            var matchingPersons = searchBy switch
+            if (searchBy is null || searchString is null)
             {
-                nameof(PersonResponse.PersonName) => await this._personsRepository.GetFilteredPersons
-                    (p => p.PersonName.Contains(searchString)),
-                nameof(PersonResponse.Email) => await this._personsRepository.GetFilteredPersons
-                    (p => p.Email.Contains(searchString)),
-                nameof(PersonResponse.DateOfBirth) => await this._personsRepository.GetFilteredPersons
-                    (p => p.DateOfBirth.Value.ToString("dd-MM-yyyy").Contains(searchString)),
-                nameof(PersonResponse.Gender) => await this._personsRepository.GetFilteredPersons
-                    (p => p.Gender.Contains(searchString)),
-                nameof(PersonResponse.CountryId) => await this._personsRepository.GetFilteredPersons
-                    (p => p.Country.CountryName.Contains(searchString)),
-                nameof(PersonResponse.Address) => await this._personsRepository.GetFilteredPersons
-                    (p => p.Address.Contains(searchString)),
-                _ => await this._personsRepository.GetAllPersons()
-            };
+                return allPersons;
+            }
 
-            return matchingPersons.Select(p => p.ToPersonResponse()).ToList();
+            switch (searchBy)
+            {
+                case (nameof(PersonResponse.PersonName)):
+                    matchingPersons = allPersons.Where
+                        (p => !string.IsNullOrEmpty(p.PersonName) ? p.PersonName.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+                    break;
+                case (nameof(PersonResponse.Email)):
+                    matchingPersons = allPersons.Where
+                        (p => !string.IsNullOrEmpty(p.Email) ? p.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+                    break;
+                case (nameof(PersonResponse.DateOfBirth)):
+                    matchingPersons = allPersons.Where
+                        (p => p.DateOfBirth is not null ? p.DateOfBirth.Value.ToString("dd MMM yyyy").Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+                    break;
+                case (nameof(PersonResponse.Gender)):
+                    matchingPersons = allPersons.Where
+                        (p => !string.IsNullOrEmpty(p.Gender) ? p.Gender.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+                    break;
+                case (nameof(PersonResponse.CountryId)):
+                    matchingPersons = allPersons.Where
+                        (p => !string.IsNullOrEmpty(p.CountryName) ? p.CountryName.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+                    break;
+                case (nameof(PersonResponse.Address)):
+                    matchingPersons = allPersons.Where
+                        (p => !string.IsNullOrEmpty(p.Address) ? p.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase) : true).ToList();
+                    break;
+                default:
+                    matchingPersons = allPersons;
+                    break;
+            }
+
+            return matchingPersons;
+
+            //var matchingPersons = searchBy switch
+            //{
+            //    nameof(PersonResponse.PersonName) => await this._personsRepository.GetFilteredPersons
+            //        (p => p.PersonName.Contains(searchString)),
+            //    nameof(PersonResponse.Email) => await this._personsRepository.GetFilteredPersons
+            //        (p => p.Email.Contains(searchString)),
+            //    nameof(PersonResponse.DateOfBirth) => await this._personsRepository.GetFilteredPersons
+            //        (p => p.DateOfBirth.Value.ToString("dd-MM-yyyy").Contains(searchString)),
+            //    nameof(PersonResponse.Gender) => await this._personsRepository.GetFilteredPersons
+            //        (p => p.Gender.Contains(searchString)),
+            //    nameof(PersonResponse.CountryId) => await this._personsRepository.GetFilteredPersons
+            //        (p => p.Country.CountryName.Contains(searchString)),
+            //    nameof(PersonResponse.Address) => await this._personsRepository.GetFilteredPersons
+            //        (p => p.Address.Contains(searchString)),
+            //    _ => await this._personsRepository.GetAllPersons()
+            //};
+
+            //return matchingPersons.Select(p => p.ToPersonResponse()).ToList();
         }
 
         public List<PersonResponse> GetSortedPersons
             (List<PersonResponse> allPersons, string sortBy, SortOrderOptions sortOrderOption)
         {
+            this._logger.LogInformation("GetSortedPersons from PersonsService");
+
+            this._logger.LogDebug($"sortBy: {sortBy}, sortOrderOption: {sortOrderOption}");
+
             if (sortBy is null)
             {
                 return allPersons;
