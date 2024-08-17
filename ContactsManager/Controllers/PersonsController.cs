@@ -9,6 +9,10 @@ using ServicesContracts.Interfaces;
 namespace ContactsManager.Controllers
 {
     [Route("[controller]")]
+    [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new string[]
+    {
+        "My-Key-From-Controller", "My-Value-From-Controller"
+    })]
     public class PersonsController : Controller
     {
         private readonly IPersonsService _personsService;
@@ -29,7 +33,7 @@ namespace ContactsManager.Controllers
         [TypeFilter(typeof(PersonsListActionFilter))]
         [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new string[]
         {
-            "X-Custom-Key", "Custom-Value"
+            "My-Key-From-Method", "My-Value-From-Method"
         })]
         public async Task<IActionResult> Index
             ([FromQuery]string searchBy, [FromQuery]string? searchString,

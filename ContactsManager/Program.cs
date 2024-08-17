@@ -5,6 +5,7 @@ using RepositoriesContracts;
 using Services;
 using ServicesContracts.Interfaces;
 using Serilog;
+using ContactsManager.Filters.ActionFilters;
 
 namespace ContactsManager
 {
@@ -39,7 +40,13 @@ namespace ContactsManager
                 logging.CombineLogs = true;
             });
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                var logger = builder.Services.BuildServiceProvider()
+                    .GetRequiredService<ILogger<ResponseHeaderActionFilter>>();
+                options.Filters.Add(new ResponseHeaderActionFilter
+                    (logger, "My-Key-From-Global", "My-Value-From-GLobal"));
+            });
 
             builder.Services.AddScoped<ICountriesService, CountriesService>();
             builder.Services.AddScoped<IPersonsService, PersonsService>();
