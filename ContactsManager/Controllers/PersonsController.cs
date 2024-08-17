@@ -46,13 +46,13 @@ namespace ContactsManager.Controllers
             };
             var persons = await this._personsService.GetFilteredPersons(searchBy, searchString);
 
-            ViewBag.CurrentSearchString = searchString;
-            ViewBag.CurrentSearchBy = searchBy;
+            //ViewBag.CurrentSearchString = searchString;
+            //ViewBag.CurrentSearchBy = searchBy;
 
             var sortedPersons = this._personsService.GetSortedPersons(persons, sortBy, sortOrderOption);
 
-            ViewBag.CurrentSortBy = sortBy;
-            ViewBag.CurrentSortOrderOption = sortOrderOption.ToString();
+            //ViewBag.CurrentSortBy = sortBy;
+            //ViewBag.CurrentSortOrderOption = sortOrderOption.ToString();
 
             return View(sortedPersons);
         }

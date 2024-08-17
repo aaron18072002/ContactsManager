@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using ContactsManager.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 using ServicesContracts.DTOs;
 
 namespace ContactsManager.Filters.ActionFilters
@@ -14,10 +15,35 @@ namespace ContactsManager.Filters.ActionFilters
         public void OnActionExecuted(ActionExecutedContext context)
         {
             this._logger.LogInformation("OnActionExecuted method of PersonsListActionFilter");
+
+            var personsController = (PersonsController)context.Controller;
+            var parameters = (IDictionary<string, object?>?)context.HttpContext.Items["arguments"];
+
+            if(parameters is not null)
+            {
+                if(parameters.ContainsKey("searchBy"))
+                {
+                    personsController.ViewBag.CurrentSearchBy = Convert.ToString(parameters["searchBy"]);
+                }
+                if (parameters.ContainsKey("searchString"))
+                {
+                    personsController.ViewBag.CurrentSearchBy = Convert.ToString(parameters["searchString"]);
+                }
+                if (parameters.ContainsKey("sortBy"))
+                {
+                    personsController.ViewBag.CurrentSortBy = Convert.ToString(parameters["sortBy"]);
+                }
+                if (parameters.ContainsKey("sortOrderOption"))
+                {
+                    personsController.ViewBag.CurrentSortOrderOption = Convert.ToString(parameters["sortOrderOption"]);
+                }
+            }
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            context.HttpContext.Items["arguments"] = context.ActionArguments;
+
             this._logger.LogInformation("OnActionExecuting method of PersonsListActionFilter");
             if(context.ActionArguments.ContainsKey("searchBy"))
             {
@@ -33,8 +59,8 @@ namespace ContactsManager.Filters.ActionFilters
                 if(!searchOptions.Any(p => p == searchBy))
                 {
                     this._logger.LogInformation($"Actual searchBy value: {searchBy}");
-                    context.ActionArguments["seachBy"] = nameof(PersonResponse.PersonName);
-                    this._logger.LogInformation($"Updated searchBy value: {context.ActionArguments["seachBy"]}");
+                    context.ActionArguments["searchBy"] = nameof(PersonResponse.PersonName);
+                    this._logger.LogInformation($"Updated searchBy value: {context.ActionArguments["searchBy"]}");
                 }
             }
         }
