@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using ContactsManager.Filters.ActionFilters;
+using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Rotativa.AspNetCore;
 using ServicesContracts.DTOs;
@@ -21,8 +22,11 @@ namespace ContactsManager.Controllers
             this._logger = logger;
         }
 
+
+        [HttpGet]
         [Route("/")]
         [Route("[action]")]
+        [TypeFilter(typeof(PersonsListActionFilter))]
         public async Task<IActionResult> Index
             ([FromQuery]string searchBy, [FromQuery]string? searchString,
              [FromQuery]string sortBy, [FromQuery]SortOrderOptions sortOrderOption)
