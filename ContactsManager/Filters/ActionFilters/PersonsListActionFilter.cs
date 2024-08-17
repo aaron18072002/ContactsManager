@@ -14,7 +14,8 @@ namespace ContactsManager.Filters.ActionFilters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            this._logger.LogInformation("OnActionExecuted method of PersonsListActionFilter");
+            this._logger.LogInformation("{FilterName}.{MethodName} method", 
+                nameof(PersonsListActionFilter), nameof(this.OnActionExecuted));
 
             var personsController = (PersonsController)context.Controller;
             var parameters = (IDictionary<string, object?>?)context.HttpContext.Items["arguments"];
@@ -42,10 +43,12 @@ namespace ContactsManager.Filters.ActionFilters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            this._logger.LogInformation("{FilterName}.{MethodName} method",
+                nameof(PersonsListActionFilter), nameof(this.OnActionExecuting));
+
             context.HttpContext.Items["arguments"] = context.ActionArguments;
 
-            this._logger.LogInformation("OnActionExecuting method of PersonsListActionFilter");
-            if(context.ActionArguments.ContainsKey("searchBy"))
+            if (context.ActionArguments.ContainsKey("searchBy"))
             {
                 var searchBy = Convert.ToString(context.ActionArguments["searchBy"]);
                 var searchOptions = new List<string>()
