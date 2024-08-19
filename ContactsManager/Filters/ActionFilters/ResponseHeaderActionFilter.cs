@@ -2,7 +2,7 @@
 
 namespace ContactsManager.Filters.ActionFilters
 {
-    public class ResponseHeaderActionFilter : IActionFilter, IOrderedFilter
+    public class ResponseHeaderActionFilter : IAsyncActionFilter, IOrderedFilter
     {
         private readonly ILogger<ResponseHeaderActionFilter> _logger;
         private readonly string _key;
@@ -17,17 +17,29 @@ namespace ContactsManager.Filters.ActionFilters
             this.Order = order;
         }        
 
-        public void OnActionExecuted(ActionExecutedContext context)
-        {
-            this._logger.LogInformation("{FilterName}.{MethodName} method", 
-                nameof(ResponseHeaderActionFilter), nameof(this.OnActionExecuted));
-            context.HttpContext.Response.Headers[this._key] = this._value;
-        }
+        //public void OnActionExecuted(ActionExecutedContext context)
+        //{
+        //    this._logger.LogInformation("{FilterName}.{MethodName} method", 
+        //        nameof(ResponseHeaderActionFilter), nameof(this.OnActionExecuted));
+        //    context.HttpContext.Response.Headers[this._key] = this._value;
+        //}
 
-        public void OnActionExecuting(ActionExecutingContext context)
+        //public void OnActionExecuting(ActionExecutingContext context)
+        //{
+        //    this._logger.LogInformation("{FilterName}.{MethodName} method",
+        //        nameof(ResponseHeaderActionFilter), nameof(this.OnActionExecuting));
+        //}
+
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            this._logger.LogInformation("{FilterName}.{MethodName} method",
-                nameof(ResponseHeaderActionFilter), nameof(this.OnActionExecuting));
+            this._logger.LogInformation("{FilterName}.{MethodName} method executing",
+                nameof(ResponseHeaderActionFilter), nameof(this.OnActionExecutionAsync));
+
+            await next();
+
+            this._logger.LogInformation("{FilterName}.{MethodName} method executed",
+                nameof(ResponseHeaderActionFilter), nameof(this.OnActionExecutionAsync));
+            context.HttpContext.Response.Headers[this._key] = this._value;
         }
     }
 }
