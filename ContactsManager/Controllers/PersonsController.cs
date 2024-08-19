@@ -9,10 +9,10 @@ using ServicesContracts.Interfaces;
 namespace ContactsManager.Controllers
 {
     [Route("[controller]")]
-    [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new string[]
+    [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
     {
-        "My-Key-From-Controller", "My-Value-From-Controller"
-    })]
+        "My-Key-From-Controller", "My-Value-From-Controller", 3
+    }, Order = 3)]
     public class PersonsController : Controller
     {
         private readonly IPersonsService _personsService;
@@ -30,11 +30,11 @@ namespace ContactsManager.Controllers
         [HttpGet]
         [Route("/")]
         [Route("[action]")]
-        [TypeFilter(typeof(PersonsListActionFilter))]
-        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new string[]
+        [TypeFilter(typeof(PersonsListActionFilter), Order = 4)]
+        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
         {
-            "My-Key-From-Method", "My-Value-From-Method"
-        })]
+            "My-Key-From-Method", "My-Value-From-Method", 1
+        }, Order = 1)]
         public async Task<IActionResult> Index
             ([FromQuery]string searchBy, [FromQuery]string? searchString,
              [FromQuery]string sortBy, [FromQuery]SortOrderOptions sortOrderOption)
