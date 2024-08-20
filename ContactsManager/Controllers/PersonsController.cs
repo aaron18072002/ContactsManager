@@ -1,4 +1,5 @@
-﻿using ContactsManager.Filters.ActionFilters;
+﻿using ContactsManager.Filters;
+using ContactsManager.Filters.ActionFilters;
 using ContactsManager.Filters.AuthorizationFilters;
 using ContactsManager.Filters.ExceptionFilters;
 using ContactsManager.Filters.ResultFilters;
@@ -40,6 +41,7 @@ namespace ContactsManager.Controllers
         }, Order = 1)]
         [TypeFilter(typeof(PersonsListResultFilter))]
         [TypeFilter(typeof(HandleExceptionMethod))]
+        [SkipFilter]
         public async Task<IActionResult> Index
             ([FromQuery] string searchBy, [FromQuery] string? searchString,
              [FromQuery] string sortBy, [FromQuery] SortOrderOptions sortOrderOption)
