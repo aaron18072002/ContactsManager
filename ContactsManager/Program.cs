@@ -6,6 +6,7 @@ using Services;
 using ServicesContracts.Interfaces;
 using Serilog;
 using ContactsManager.Filters.ActionFilters;
+using ContactsManager.Filters.ResultFilters;
 
 namespace ContactsManager
 {
@@ -49,6 +50,8 @@ namespace ContactsManager
 
                 options.Filters.Add(new ResponseHeaderActionFilter
                     (logger, "My-Key-From-Global", "My-Value-From-GLobal", 2));
+
+                options.Filters.Add<PersonAlwaysRunResultFilter>();
             });
 
             builder.Services.AddScoped<ICountriesService, CountriesService>();
