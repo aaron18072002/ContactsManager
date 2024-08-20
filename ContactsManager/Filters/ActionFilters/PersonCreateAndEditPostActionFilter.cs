@@ -19,7 +19,7 @@ namespace ContactsManager.Filters.ActionFilters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            this._logger.LogInformation("{FilterName}.{MethodName} method",
+            this._logger.LogInformation("{FilterName}.{MethodName} method before",
                 nameof(PersonsListActionFilter), nameof(this.OnActionExecutionAsync));
             if(context.Controller is PersonsController)
             {
@@ -43,6 +43,9 @@ namespace ContactsManager.Filters.ActionFilters
             {
                 await next();
             }
+
+            this._logger.LogInformation("{FilterName}.{MethodName} method after",
+                nameof(PersonsListActionFilter), nameof(this.OnActionExecutionAsync));
         }
     }
 }
