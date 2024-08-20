@@ -1,4 +1,5 @@
 ﻿using ContactsManager.Filters.ActionFilters;
+using ContactsManager.Filters.AuthorizationFilters;
 using ContactsManager.Filters.ResultFilters;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -104,6 +105,7 @@ namespace ContactsManager.Controllers
 
         [HttpGet]
         [Route("[action]/{personId}")]
+        [TypeFilter(typeof(TokenResultFilter))]
         public async Task<IActionResult> Edit([FromRoute] Guid personId)
         {
             var person = await this._personsService.GetPersonByPersonId(personId);
@@ -126,6 +128,7 @@ namespace ContactsManager.Controllers
         {
             "personUpdateRequest"
         })]
+        [TypeFilter(typeof(TokenAuthorizationFilter))]
         public async Task<IActionResult> Edit([FromForm] PersonUpdateRequest personUpdateRequest)
         {
             var person = await this._personsService.GetPersonByPersonId(personUpdateRequest.PersonId);
