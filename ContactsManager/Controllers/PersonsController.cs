@@ -1,5 +1,6 @@
 ﻿using ContactsManager.Filters.ActionFilters;
 using ContactsManager.Filters.AuthorizationFilters;
+using ContactsManager.Filters.ExceptionFilters;
 using ContactsManager.Filters.ResultFilters;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -38,6 +39,7 @@ namespace ContactsManager.Controllers
             "My-Key-From-Method", "My-Value-From-Method", 1
         }, Order = 1)]
         [TypeFilter(typeof(PersonsListResultFilter))]
+        [TypeFilter(typeof(HandleExceptionMethod))]
         public async Task<IActionResult> Index
             ([FromQuery] string searchBy, [FromQuery] string? searchString,
              [FromQuery] string sortBy, [FromQuery] SortOrderOptions sortOrderOption)
