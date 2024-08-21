@@ -237,7 +237,7 @@ namespace Services
                 throw new ArgumentNullException(nameof(personId));  
             }
 
-            var matchingPerson = this.GetPersonByPersonId(personId);
+            var matchingPerson = await this.GetPersonByPersonId(personId);
             if(matchingPerson is null)
             {
                 return false;
