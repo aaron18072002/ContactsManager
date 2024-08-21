@@ -13,10 +13,11 @@ using ServicesContracts.Interfaces;
 namespace ContactsManager.Controllers
 {
     [Route("[controller]")]
-    [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
-    {
-        "My-Key-From-Controller", "My-Value-From-Controller", 3
-    }, Order = 3)]
+    //[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
+    //{
+    //    "My-Key-From-Controller", "My-Value-From-Controller", 3
+    //}, Order = 3)]
+    [ResponseHeaderFilterUsingFactory("My-Key-From-Controller", "My-Value-From-Controller", 3)]
     public class PersonsController : Controller
     {
         private readonly IPersonsService _personsService;
@@ -35,10 +36,11 @@ namespace ContactsManager.Controllers
         [Route("/")]
         [Route("[action]")]
         [TypeFilter(typeof(PersonsListActionFilter), Order = 4)]
-        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
-        {
-            "My-Key-From-Method", "My-Value-From-Method", 1
-        }, Order = 1)]
+        //[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[]
+        //{
+        //    "My-Key-From-Method", "My-Value-From-Method", 1
+        //}, Order = 1)]
+        [ResponseHeaderFilterUsingFactory("My-Key-From-Controller", "My-Value-From-Controller", 1)]
         [TypeFilter(typeof(PersonsListResultFilter))]
         [TypeFilter(typeof(HandleExceptionMethod))]
         [SkipFilter]
