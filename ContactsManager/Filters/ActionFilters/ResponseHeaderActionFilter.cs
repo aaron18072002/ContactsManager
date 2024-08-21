@@ -2,20 +2,49 @@
 
 namespace ContactsManager.Filters.ActionFilters
 {
+    public class ResponseHeaderFilterUsingFactory : Attribute, IFilterFactory
+    {
+        private readonly string _key;
+        private readonly string _value;
+        private int _order;
+        public bool IsReusable => false;
+        public ResponseHeaderFilterUsingFactory(string key, string value, int order)
+        {
+            this._key = key;
+            this._value = value;
+            this._order = order;
+        }
+
+        public IFilterMetadata CreateInstance(IServiceProvider serviceProvider)
+        {
+            var filter = serviceProvider.GetRequiredService<ResponseHeaderActionFilter>();
+            filter.Key = this._key;
+            filter.Value = this._value;
+            filter.Order = this._order; 
+
+            return filter;
+        }
+    }
     public class ResponseHeaderActionFilter : IAsyncActionFilter, IOrderedFilter
     {
         private readonly ILogger<ResponseHeaderActionFilter> _logger;
-        private readonly string _key;
-        private readonly string _value;
+        public string Key { get; set; } = "Default-Key";
+        public string Value { get; set; } = "Default-Value";
         public int Order { get; set; }
-        public ResponseHeaderActionFilter
-            (ILogger<ResponseHeaderActionFilter> logger, string key, string value, int order)
+
+        public ResponseHeaderActionFilter(ILogger<ResponseHeaderActionFilter> logger)
         {
             this._logger = logger;
-            this._key = key;
-            this._value = value;
-            this.Order = order;
-        }        
+        }
+
+        //public ResponseHeaderActionFilter
+        //    (ILogger<ResponseHeaderActionFilter> logger, string key, string value, int order)
+        //{
+        //    this._logger = logger;
+        //    this._key = key;
+        //    this._value = value;
+        //    this.Order = order;
+        //}        
 
         //public void OnActionExecuted(ActionExecutedContext context)
         //{
@@ -39,7 +68,7 @@ namespace ContactsManager.Filters.ActionFilters
 
             this._logger.LogInformation("{FilterName}.{MethodName} method executed",
                 nameof(ResponseHeaderActionFilter), nameof(this.OnActionExecutionAsync));
-            context.HttpContext.Response.Headers[this._key] = this._value;
+            context.HttpContext.Response.Headers[this.Key] = this.Value;
         }
     }
 }
