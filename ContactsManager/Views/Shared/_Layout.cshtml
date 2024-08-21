@@ -9,22 +9,46 @@
 </head>
 <body>
     <div class="container">
-        <div class="navbar">
-            <div class="navbar-brand">
-                <img src="~/logo.png" width="30px" asp-append-version="true" />
-            </div>
-            <ul>
-                <li>
-                    <a href="~/persons/index">Persons</a>
-                </li>
-                <li>
-                    <a href="~/countries/UploadFromExcel">Upload Countries</a>
-                </li>
-            </ul>
-        </div>
-
         <div class="page-content">
-            @RenderBody()
+            <div class="margin-bottom">
+                <div class="flex" id="top-bar-div">
+                    <div class="flex-1" id="app-title-div">
+                        <div class="flex" style="align-items: center">
+                            <img src="~/logo.png" width="30px" height="30px" asp-append-version="true" />
+                            <h1 class="app-title">
+                                <i class="fa-solid fa-people-simple"></i>
+                                Contacts Manager
+                            </h1>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 pr" id="search-box-div">
+                        <div class="navbar account-links">
+                            <ul>
+                                <li>
+                                    <a>Register</a>
+                                    <a>Login</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar mb">
+                <ul>
+                    <li>
+                        <a href="~/persons/index">Persons</a>
+                    </li>
+                    <li>
+                        <a href="~/countries/UploadFromExcel">Upload Countries</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="page-content">
+                @RenderBody()
+            </div>
         </div>
     </div>
 
