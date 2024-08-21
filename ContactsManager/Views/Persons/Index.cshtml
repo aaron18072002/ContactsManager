@@ -104,15 +104,15 @@
                 @foreach (var personResponse in Model)
                 {
                     <tr>
-                        <td style="width:11%">@personResponse.PersonName</td>
-                        <td style="width:15%">@personResponse.Email</td>
+                        <td style="width:9%">@personResponse.PersonName</td>
+                        <td style="width:11%">@personResponse.Email</td>
                         <td style="width:10%">@personResponse.DateOfBirth?.ToString("dd MM yyyy")</td>
-                        <td style="width:10%">@personResponse.Age</td>
+                        <td style="width:6%">@personResponse.Age</td>
                         <td style="width:9%">@personResponse.Gender</td>
                         <td style="width:14%">@personResponse.CountryName</td>
-                        <td style="width:14%">@personResponse.Address</td>
-                        <td style="width:9%">@personResponse.ReceiveNewsLetters</td>
-                        <td style="width:12%">
+                        <td style="width:13%">@personResponse.Address</td>
+                        <td style="width:14%">@personResponse.ReceiveNewsLetters</td>
+                        <td style="width:18%">
                             <a asp-controller="Persons" asp-action="Edit" asp-route-personId="@personResponse.PersonId" class="button-link button-blue-back">
                                 Edit
                             </a>
