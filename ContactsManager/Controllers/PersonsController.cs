@@ -41,7 +41,7 @@ namespace ContactsManager.Controllers
         //    "My-Key-From-Method", "My-Value-From-Method", 1
         //}, Order = 1)]
         [ResponseHeaderFilterUsingFactory("My-Key-From-Controller", "My-Value-From-Controller", 1)]
-        [TypeFilter(typeof(PersonsListResultFilter))]
+        //[TypeFilter(typeof(PersonsListResultFilter))]
         [TypeFilter(typeof(HandleExceptionMethod))]
         [SkipFilter]
         public async Task<IActionResult> Index
@@ -63,13 +63,13 @@ namespace ContactsManager.Controllers
             };
             var persons = await this._personsService.GetFilteredPersons(searchBy, searchString);
 
-            //ViewBag.CurrentSearchString = searchString;
-            //ViewBag.CurrentSearchBy = searchBy;
+            ViewBag.CurrentSearchString = searchString;
+            ViewBag.CurrentSearchBy = searchBy;
 
             var sortedPersons = this._personsService.GetSortedPersons(persons, sortBy, sortOrderOption);
 
-            //ViewBag.CurrentSortBy = sortBy;
-            //ViewBag.CurrentSortOrderOption = sortOrderOption.ToString();
+            ViewBag.CurrentSortBy = sortBy;
+            ViewBag.CurrentSortOrderOption = sortOrderOption.ToString();
 
             return View(sortedPersons);
         }
