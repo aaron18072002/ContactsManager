@@ -41,6 +41,8 @@ namespace ContactsManager
                 logging.CombineLogs = true;
             });
 
+            builder.Services.AddTransient<ResponseHeaderActionFilter>();
+
             builder.Services.AddControllersWithViews(options =>
             {
                 //options.Filters.Add<ResponseHeaderActionFilter>(5); without any parameters
@@ -48,8 +50,12 @@ namespace ContactsManager
                 var logger = builder.Services.BuildServiceProvider()
                     .GetRequiredService<ILogger<ResponseHeaderActionFilter>>();
 
-                options.Filters.Add(new ResponseHeaderActionFilter
-                    (logger, "My-Key-From-Global", "My-Value-From-GLobal", 2));
+                options.Filters.Add(new ResponseHeaderActionFilter(logger)
+                {
+                    Key = "My-Key-From-Global",
+                    Value = "My-Key-From-Global",
+                    Order = 2
+                });
 
                 options.Filters.Add<PersonAlwaysRunResultFilter>();
             });
