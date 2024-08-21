@@ -2,6 +2,8 @@
 using Entities;
 using EntityFrameworkCoreMock;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Repositories;
 using Services;
 using ServicesContracts.DTOs;
@@ -29,11 +31,14 @@ namespace ContactsManagerTests
             dbContextMock.CreateDbSetMock(t => t.Persons, personsInitialize);
             dbContextMock.CreateDbSetMock(t => t.Countries, countriesInitialize);
 
+            var personsRepositoryLoggerMock = new Mock<ILogger<PersonsRepository>>();
+            var personsServiceLoggerMock = new Mock<ILogger<PersonsService>>();
+
             var countriesRepository = new CountriesRepository(dbContext);
-            var personsRepository = new PersonsRepository(dbContext);
+            var personsRepository = new PersonsRepository(dbContext, personsRepositoryLoggerMock.Object);
 
             this._countriesService = new CountriesService(countriesRepository);
-            this._personsService = new PersonsService(personsRepository);
+            this._personsService = new PersonsService(personsRepository, personsServiceLoggerMock.Object);
             this._testOutputHelper = testOutputHelper;
             this._fixture = new Fixture();
         }
