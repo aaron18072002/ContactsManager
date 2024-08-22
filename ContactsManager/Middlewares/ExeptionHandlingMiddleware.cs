@@ -32,9 +32,11 @@ namespace ContactsManager.Middlewares
                     this._logger.LogError("{ExceptionType}.{ExceptionMessage}",
                         ex.GetType().ToString(), ex.Message);
                 }
+
+                throw new Exception(ex.Message);
             }
-            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await httpContext.Response.WriteAsync("Error occured");
+            //httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            //await httpContext.Response.WriteAsync("Error occured");
         }
     }
 
