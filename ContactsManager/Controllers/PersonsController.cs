@@ -42,7 +42,7 @@ namespace ContactsManager.Controllers
         //}, Order = 1)]
         [ResponseHeaderFilterUsingFactory("My-Key-From-Controller", "My-Value-From-Controller", 1)]
         //[TypeFilter(typeof(PersonsListResultFilter))]
-        [TypeFilter(typeof(HandleExceptionMethod))]
+        //[TypeFilter(typeof(HandleExceptionMethod))]
         [SkipFilter]
         public async Task<IActionResult> Index
             ([FromQuery] string searchBy, [FromQuery] string? searchString,
