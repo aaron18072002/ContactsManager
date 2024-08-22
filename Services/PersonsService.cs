@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using Entities;
+using Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
@@ -208,7 +209,7 @@ namespace Services
             var matchingPerson = await this._personsRepository.GetPersonById(personUpdateRequest.PersonId.Value);
             if(matchingPerson is null)
             {
-                throw new ArgumentException("This PersonId doesnt exists in datasource");
+                throw new InvalidPersonIdException("This PersonId doesnt exists in datasource");
             }
 
             var personEntityToUpdate = personUpdateRequest.ToPerson();
