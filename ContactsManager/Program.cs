@@ -8,6 +8,7 @@ using Serilog;
 using ContactsManager.Filters.ActionFilters;
 using ContactsManager.Filters.ResultFilters;
 using ContactsManager.StartupExtensions;
+using ContactsManager.Middlewares;
 
 namespace ContactsManager
 {
@@ -81,6 +82,9 @@ namespace ContactsManager
             if(app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            } else
+            {
+                app.UseExeptionHandlingMiddleware();
             }
 
             Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
